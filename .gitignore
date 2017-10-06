@@ -6,7 +6,6 @@ env/
 *.pdf
 images/
 results/
-*.sh
 *.pkl
 *.csv
 *.npy
