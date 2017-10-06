@@ -38,6 +38,7 @@ Clone and install gym and mujoco-py:
 Download mjpro131. Follow the instructions from mujoco-py for where to unzip and where to place the license key.
 Again, other versions of Mujoco may work, but they have not been tested on this project.
 
+
 ## Running Tests
 
 The general methods used for initializing the tasks, collecting the data and evaluating the learners can be found in `framework.py`.

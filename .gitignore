@@ -6,7 +6,6 @@ env/
 *.pdf
 images/
 results/
-*.pkl
 *.csv
 *.npy
 gym/
