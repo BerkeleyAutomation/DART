@@ -54,7 +54,7 @@ Arguments common to all tests are given below:
 
 #### DART Arguments
 
-* `--update [space-separated integers]` Iterations to update the noise parameter
+* `--update [space-separated integers]` Iterations to update the noise parameter.
 
 #### Random Noise Arguments
 
@@ -68,6 +68,6 @@ Arguments common to all tests are given below:
 ## Plotting Results
 
 Rewards and losses are plotted using scripts in the `plotting` directory. You may comment/uncomment sections depending on which learning
-algorithms you want plot. Similarly, running these scripts require arguments in order to plot the appropriate set of tests. See `plot.sh` as an example.
+algorithms you want plot. Similarly, running these scripts requires arguments in order to plot the appropriate set of tests. See `plot.sh` as an example.
 
 	sh plot.sh
