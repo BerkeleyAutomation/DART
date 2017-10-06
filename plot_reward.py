@@ -7,8 +7,6 @@ from tools import statistics, utils
 import matplotlib.pyplot as plt
 import itertools
 marker = itertools.cycle((',', '+', '.', 'o', '*', 's')) 
-# color = itertools.cycle(( "#49679E", "#FCB716", "#A0B2D8", "#F68B20", "#2D3956"))
-# color = itertools.cycle(( "#49679E", "#FCB716", "#A0B2D8", "#F68B20", "#2D3956"))
 color=itertools.cycle(('red', 'blue', 'orange', 'purple'))
 
 
@@ -60,9 +58,10 @@ def main():
     ptype = 'reward'
     params_bc = params.copy()
     del params_bc['update']     # Updates are used in behavior cloning
+    c = next(color)
     means, sems = utils.extract_data(params_bc, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='Behavior Cloning', color='red')
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color='red')
+    plt.plot(iters, means, label='Behavior Cloning', color=c)
+    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
 
 
     # DAgger
@@ -71,18 +70,20 @@ def main():
     params_dagger = params.copy()
     del params_dagger['update']
     params_dagger['beta'] = .5
+    c = next(color)
     means, sems = utils.extract_data(params_dagger, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='DAgger', color='blue')
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color='blue')
+    plt.plot(iters, means, label='DAgger', color=c)
+    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
 
 
     # DART
     title = 'test_dart'
     ptype = 'reward'
     params_dart = params.copy()
+    c = next(color)
     means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='DART', color='orange')
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color='orange')
+    plt.plot(iters, means, label='DART', color=c)
+    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
 
     # Random
     title = 'test_rand'
@@ -90,9 +91,10 @@ def main():
     params_rand = params.copy()
     del params_rand['update']
     params_rand['prior'] = 1.0
+    c = next(color)
     means, sems = utils.extract_data(params_rand, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='Rand', color='purple')
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color='purple')
+    plt.plot(iters, means, label='Rand', color=c)
+    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
  
 
 

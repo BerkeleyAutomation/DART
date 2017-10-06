@@ -7,7 +7,6 @@ from tools import statistics, utils
 import matplotlib.pyplot as plt
 import itertools
 marker = itertools.cycle((',', '+', '.', 'o', '*', 's')) 
-# color = itertools.cycle(("#FBB717", "#2B3956", "#F68B20"))
 color=itertools.cycle(('red', 'blue', 'orange', 'purple'))
 
 
