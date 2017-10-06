@@ -1,8 +1,11 @@
 # Noise Injection for Imitation Learning
 
+The code is based on work by Michael Laskey, Jonathan Lee, Roy Fox, Anca Dragan, and Ken Goldberg.
+
 The purpose of this repository is to make available the simulation
 experiments used in the paper *Optimizing Noise Injection for Imitation Learning*
-and to provide examples of how noise injection may be used.
+and to provide examples of how noise injection may be used to improve off-policy imitation learning
+by mitigating covariate shift.
 
 ## Requirements
 Clone this repo:
