@@ -7,9 +7,8 @@ from tools import statistics, utils
 import matplotlib.pyplot as plt
 import itertools
 marker = itertools.cycle((',', '+', '.', 'o', '*', 's')) 
-# color = itertools.cycle(( "#49679E", "#FCB716", "#A0B2D8", "#F68B20", "#2D3956"))
-color = itertools.cycle(( "#49679E", "#FCB716", "#A0B2D8", "#F68B20", "#2D3956"))
-
+# color = itertools.cycle(("#FBB717", "#2B3956", "#F68B20"))
+color=itertools.cycle(('red', 'blue', 'orange', 'purple'))
 
 
 
@@ -44,28 +43,47 @@ def main():
     ptype = 'sup_loss'
     params_bc = params.copy()
     del params_bc['update']     # Updates are used in behavior cloning
+    c = next(color)
     means, sems = utils.extract_data(params_bc, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='Behavior Cloning', color='red', linestyle='--')
+    plt.plot(iters, means, color=c, linestyle='--')
 
-    # BC loss on lnr distr
     ptype = 'surr_loss'
     means, sems = utils.extract_data(params_bc, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='Behavior Cloning', color='red')
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color='red')
+    plt.plot(iters, means, label='Behavior Cloning', color=c)
+    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
 
+    # DAgger
+    title = 'test_dagger'
+    ptype = 'sup_loss'
+    params_dagger = params.copy()
+    params_dagger['beta'] = .5      # You may adjust the prior to whatever you chose.
+    del params_dagger['update']
+    c = next(color)
+    means, sems = utils.extract_data(params_dagger, iters, title, sub_dir, ptype)
+    plt.plot(iters, means, color=c, linestyle='--')
+
+    ptype = 'surr_loss'
+    means, sems = utils.extract_data(params_dagger, iters, title, sub_dir, ptype)
+    plt.plot(iters, means, label='DAgger', color=c)
+    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
 
 
     # DART
     title = 'test_dart'
     ptype = 'sup_loss'
     params_dart = params.copy()
+    c = next(color)
     means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='DART', color='blue', linestyle='--')
+    plt.plot(iters, means, color=c, linestyle='--')
     
     ptype = 'surr_loss'
     means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='DART', color='blue')
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color='blue')
+    plt.plot(iters, means, label='DART', color=c)
+    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+
+    ptype = 'sim_err'
+    means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
+    plt.plot(iters, means, label='DART Sim. Err.', color=c, linestyle=':')
 
 
     # Rand
@@ -74,22 +92,21 @@ def main():
     params_rand = params.copy()
     params_rand['prior'] = 1.0      # You may adjust the prior to whatever you chose.
     del params_rand['update']
+    c = next(color)
     means, sems = utils.extract_data(params_rand, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='Rand', color='purple', linestyle='--')
+    plt.plot(iters, means, label='Rand Sup Loss', color=c, linestyle='--')
 
     ptype = 'surr_loss'
     means, sems = utils.extract_data(params_rand, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='DART', color='purple')
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color='purple')
+    plt.plot(iters, means, label='Rand Loss', color=c)
+    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
 
 
-    
 
-
-    plt.title(params['envname'])
+    plt.title("Loss on " + str(params['envname']))
     plt.legend()
     plt.xticks(iters)
-    plt.legend()
+    plt.legend(loc='upper right')
 
     save_path = 'images/'
     if not os.path.exists(save_path):

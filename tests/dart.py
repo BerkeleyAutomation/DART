@@ -3,26 +3,27 @@ os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 import gym
 import numpy as np
-from tools import statistics, utils
+from tools import statistics, noise, utils
 from tools.supervisor import GaussianSupervisor
 import argparse
+import scipy.stats
 import time as timer
 import framework
 
 def main():
-    title = 'test_rand'
+    title = 'test_dart'
     ap = argparse.ArgumentParser()
     ap.add_argument('--envname', required=True)                         # OpenAI gym environment
     ap.add_argument('--t', required=True, type=int)                     # time horizon
     ap.add_argument('--iters', required=True, type=int, nargs='+')      # iterations to evaluate the learner on
-    ap.add_argument('--prior', required=True, type=float)               # prior on the amount of error one expects in the learner
+    ap.add_argument('--update', required=True, nargs='+', type=int)     # iterations to update the noise term
     
     args = vars(ap.parse_args())
     args['arch'] = [64, 64]
     args['lr'] = .01
     args['epochs'] = 50
 
-    TRIALS = 10
+    TRIALS = 25
 
 
     test = Test(args)
@@ -34,7 +35,26 @@ def main():
 
 
 
+
+
 class Test(framework.Test):
+
+
+    def update_noise(self, i, trajs):
+
+        if i in self.params['update']:
+            self.lnr.train()
+            new_cov = noise.sample_covariance_trajs(self.env, self.lnr, trajs, 5, self.params['t'])
+            new_cov = new_cov
+            print "Estimated covariance matrix: "
+            print new_cov
+            print np.trace(new_cov)
+            self.sup = GaussianSupervisor(self.net_sup, new_cov)
+            return self.sup
+        else:
+            return self.sup
+
+
 
 
     def run_iters(self):
@@ -49,16 +69,11 @@ class Test(framework.Test):
         }
         trajs = []
 
-        d = self.params['d']
-        new_cov = np.random.normal(0, 1, (d, d))
-        new_cov = new_cov.T.dot(new_cov)
-        new_cov = new_cov / np.trace(new_cov) * self.params['prior']
-        self.sup = GaussianSupervisor(self.net_sup, new_cov)
-
         snapshots = []
         for i in range(self.params['iters'][-1]):
             print "\tIteration: " + str(i)
 
+            self.sup = self.update_noise(i, trajs)
 
             states, i_actions, _, _ = statistics.collect_traj(self.env, self.sup, T, False)
             trajs.append((states, i_actions))

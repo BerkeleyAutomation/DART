@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 import itertools
 marker = itertools.cycle((',', '+', '.', 'o', '*', 's')) 
 # color = itertools.cycle(( "#49679E", "#FCB716", "#A0B2D8", "#F68B20", "#2D3956"))
-color = itertools.cycle(( "#49679E", "#FCB716", "#A0B2D8", "#F68B20", "#2D3956"))
+# color = itertools.cycle(( "#49679E", "#FCB716", "#A0B2D8", "#F68B20", "#2D3956"))
+color=itertools.cycle(('red', 'blue', 'orange', 'purple'))
 
 
 
@@ -39,7 +40,7 @@ def main():
     ptype = 'surr_loss'
     
 
-    # Behavior Cloning loss on sup distr
+    # Best supervisor reward
     title = 'test_bc'
     ptype = 'sup_reward'
     params_bc = params.copy()
@@ -47,13 +48,14 @@ def main():
     means, sems = utils.extract_data(params_bc, iters, title, sub_dir, ptype)
     plt.plot(iters, means, label='Supervisor', color='green')
 
+    # Noisy supervisor reward using DART
     title = 'test_dart'
     ptype = 'sup_reward'
     params_dart = params.copy()
     means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
     plt.plot(iters, means, label='Noisy Supervisor', color='green', linestyle='--')
 
-    # BC loss on lnr distr
+    # BC
     title = 'test_bc'
     ptype = 'reward'
     params_bc = params.copy()
@@ -63,14 +65,36 @@ def main():
     plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color='red')
 
 
+    # DAgger
+    title = 'test_dagger'
+    ptype = 'reward'
+    params_dagger = params.copy()
+    del params_dagger['update']
+    params_dagger['beta'] = .5
+    means, sems = utils.extract_data(params_dagger, iters, title, sub_dir, ptype)
+    plt.plot(iters, means, label='DAgger', color='blue')
+    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color='blue')
+
+
     # DART
     title = 'test_dart'
     ptype = 'reward'
     params_dart = params.copy()
     means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='DART', color='blue')
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color='blue')
+    plt.plot(iters, means, label='DART', color='orange')
+    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color='orange')
+
+    # Random
+    title = 'test_rand'
+    ptype = 'reward'
+    params_rand = params.copy()
+    del params_rand['update']
+    params_rand['prior'] = 1.0
+    means, sems = utils.extract_data(params_rand, iters, title, sub_dir, ptype)
+    plt.plot(iters, means, label='Rand', color='purple')
+    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color='purple')
  
+
 
 
     plt.title(params['envname'])
