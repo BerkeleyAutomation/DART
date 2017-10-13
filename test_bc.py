@@ -23,7 +23,7 @@ def main():
     args['lr'] = .01
     args['epochs'] = 50
 
-    TRIALS = 25
+    TRIALS = 10
 
     test = Test(args)
     start_time = timer.time()
