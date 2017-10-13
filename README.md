@@ -48,7 +48,7 @@ Each test file (`test_bc.py`, `test_dart.py`, etc.) runs a different learning al
 `test_rand.py` runs behavior cloning with a Gaussian-noisy supervisor where the covariance matrix is chosen randomly. `test_dart.py`
 runs the DART iterative noise optimization algorithm.
 
-Tests with arguments used in the DART paper are listed in `test.sh` as an example.
+Tests with arguments used in the DART paper are listed in `test.sh` as an example, which you may run by executing
 
 	sh test.sh
 
@@ -75,8 +75,6 @@ Arguments common to all tests are given below:
 
 ## Plotting Results
 
-Once the tests have finished, rewards and losses can be plotted usingRewards and losses can be plotted using `plot_reward.py` and `plot_loss.py`. You may comment/uncomment sections depending on which learning
-algorithms you want plot. Similarly, running these scripts requires arguments in order to plot the appropriate set of tests. See `plot.sh` as an example of 
-plotting results from tests run in `test.sh`.
+Once the tests have finished, rewards and losses can be plotted using `plot_reward.py` and `plot_loss.py`. You may comment/uncomment sections depending on which learning algorithms you want plot. Similarly, running these scripts requires arguments in order to plot the appropriate set of tests. See `plot.sh` as an example of plotting results from tests run in `test.sh`. 
 
 	sh plot.sh
