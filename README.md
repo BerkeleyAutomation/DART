@@ -43,8 +43,12 @@ Again, other versions of Mujoco may work, but they have not been tested on this 
 
 The general methods used for initializing the tasks, collecting the data and evaluating the learners can be found in `framework.py`.
 
-Each test file (`tests/bc.py`, `tests/dart.py`, etc.) runs a different learning algorithm which takes a series of arguments.
-Tests with arguments used in the paper are listed in `test.sh` as an example.
+Each test file (`test_bc.py`, `test_dart.py`, etc.) runs a different learning algorithm which takes a series of arguments.
+`test_bc.py` runs behavior cloning without any noise as a baseline. `test_dagger` runs the DAgger algorithm (Ross et al.).
+`test_rand.py` runs behavior cloning with a Gaussian-noisy supervisor where the covariance matrix is chosen randomly. `test_dart.py`
+runs the DART iterative noise optimization algorithm.
+
+Tests with arguments used in the DART paper are listed in `test.sh` as an example.
 
 	sh test.sh
 
@@ -71,7 +75,8 @@ Arguments common to all tests are given below:
 
 ## Plotting Results
 
-Rewards and losses are plotted using scripts in the `plotting` directory. You may comment/uncomment sections depending on which learning
-algorithms you want plot. Similarly, running these scripts requires arguments in order to plot the appropriate set of tests. See `plot.sh` as an example.
+Once the tests have finished, rewards and losses can be plotted usingRewards and losses can be plotted using `plot_reward.py` and `plot_loss.py`. You may comment/uncomment sections depending on which learning
+algorithms you want plot. Similarly, running these scripts requires arguments in order to plot the appropriate set of tests. See `plot.sh` as an example of 
+plotting results from tests run in `test.sh`.
 
 	sh plot.sh
