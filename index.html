@@ -1,105 +1,91 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>SHIV</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-dark.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
     <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
+    <title>TSC by BerkeleyAutomation</title>
   </head>
+
   <body>
-      
-    <div class="wrapper">
+    <header>
+      <div class="inner">
+        <h1>TSC</h1>
+        <h2>Transition State Clustering</h2>
+        <a href="https://github.com/BerkeleyAutomation/tsc" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
 
-      <section>
-        <div id="title">
-          <h1>SHIV</h1>
-          <p></p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/BerkeleyAutomation">BerkeleyAutomation</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
-
-        <h3>
-
-
-<center>
-<div class="image">
-<img src="https://github.com/BerkeleyAutomation/shiv/raw/gh-pages/img/teaser.png?raw=true" alt="Image cannot be displayed" width="75%">
-</div>
-</center>
-
-<a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Abstract</h3>
-
-<p>Online learning from demonstration algorithms, such as
-DAgger, can learn policies for problems where the system dynamics and
-the cost function are unknown. However, during learning, they impose a
-burden on supervisors to respond to queries each time the robot
-encounters new states while executing its current best policy.  
-Algorithms such as 
-MMD-IL reduce supervisor burden
-by filtering queries with insufficient discrepancy in distribution and
-maintaining multiple policies.  We introduce the SHIV algorithm
-(Svm-based reduction in Human InterVention), which converges to 
-a single policy and reduces supervisor
-burden in non-stationary high dimensional state distributions. To
-facilitate scaling and outlier rejection, filtering is based on
-distance to an approximate level set boundary defined by a One Class
-support vector machine. We report on experiments in three contexts: 1) a
-driving simulator with a 27,936 dimensional visual feature space, 2) a
-push-grasping in clutter simulation with a 22 dimensional state space,
-and 3) physical surgical needle insertion with a 16 dimensional state
-space.  Results suggest that SHIV can efficiently learn 
-policies with equivalent performance requiring up to 70% fewer queries.</p>
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <p><img src="http://www.cs.berkeley.edu/%7Eanimesh.garg/research/images/circleProcess-2.jpg" alt="ISRR Teaser Image"></p>
 
 <h3>
-<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documents</h3>
+<a id="abstract" class="anchor" href="#abstract" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Abstract</h3>
 
-<p>SHIV: Reducing Supervisor Burden using Support Vectors for Efficient
-Learning from Demonstrations in High Dimensional State Spaces
+<p>We present a new unsupervised segmentation algorithm, Transition State Clustering (TSC), which combines results from hybrid dynamical systems and Bayesian non-parametric statistics to segment kinematic recordings of robotic surgical procedures.</p>
 
-Michael Laskey, Sam Staszak, Wesley Hsieh , Jeffrey Mahler,Florian Pokorny, Anca Dragan, Ken Goldberg. IEEE International Conference on Robotics and Automation, 2016 (Under Review). [<a href="https://github.com/BerkeleyAutomation/shiv/raw/gh-pages/Documents/ICRA_SHIV_Final_Submission.pdf">PDF</a>].</p>
+<p>TSC treats each demonstration trajectory as a noisy observation of an underlying switched linear dynamical system (SLDS) and clusters spatially and temporally similar transition events (i.e., switches in the linear regime).
+TSC uses a hierarchical Dirichlet Process Gaussian Mixture Model to avoid selecting the number of segments <em>a priori</em>.
+We compare TSC to five alternatives on the respective algorithms' correspondence to a known ground truth in a synthetic example: Gaussian Mixture Model, Gaussian Hidden Markov Model, Coresets, Gaussian Hidden Semi-Markov Model, and an Autoregressive Hidden Markov Model.</p>
 
-<p>Theoretical Analysis of SHIV
-
-Michael Laskey, Jeffrey Mahler,Florian Pokorny, Anca Dragan, Ken Goldberg. [<a href="https://github.com/BerkeleyAutomation/shiv/raw/gh-pages/Documents/theory_section.pdf">PDF</a>].</p>
-
-
-
-<h3>
-<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Video for Grasping in Clutter</h3>
-<div align="center">
-<video width="560" height="315" id="sampleMovie" src="https://github.com/BerkeleyAutomation/shiv/raw/gh-pages/Video/Box2D_ARM_SHIV.mp4" controls></video>
-</div>
+<p>We find that when demonstrations are corrupted with process and observation noise, TSC recovers the ground truth 49% more accurately than alternatives.
+Furthermore, TSC runs 100x faster than the Autoregressive Models which require expensive MCMC-based inference. 
+We also evaluated TSC on 67 recordings of surgical needle passing and suturing.
+We supplemented the kinematic recordings with manually annotated visual features denoting grasp and penetration conditions.
+On this dataset, TSC finds 83% of needle passing transitions and 73% of the suturing transitions annotated by human experts.</p>
 
 <h3>
-<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<a id="references" class="anchor" href="#references" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>References</h3>
 
-<p>This is an ongoing project at UC Berkeley with active contributions from:<br>
-Michael Laskey, <a href="http://www.cs.berkeley.edu/~ftpokorny/">Florian Pokorny</a>, Jeff Mahler, Wesley Hsieh, <a href="http://www.eecs.berkeley.edu/~anca/"> Anca Dragan</a> and <a href="http://goldberg.berkeley.edu">Ken Goldberg</a></p>
+<ul>
+<li>
+<a href="http://goldberg.berkeley.edu/pubs/krishnan-ijrr-submission-final.pdf">Transition State Clustering: Unsupervised Surgical Trajectory Segmentation For Robot Learning</a>. Sanjay Krishnan<em>, Animesh Garg</em>, Sachin Patil, Colin Lea, Greg Hager, Pieter Abbeel, Ken Goldberg (* denotes equal contribution).
+Submitted to The International Journal of Robotics Research. May 2016.</li>
 
-<p> We recently extended this approach for the grasping in clutter domain use a hierarchy of supervisors. A preprint can be found <a href="http://berkeleyautomation.github.io/HierSupCASE/">here</a></p> . 
-
-<p>Past contributors include:<br>
-Sam Staszak</p>
+<li>
+<a href="http://www.cs.berkeley.edu/%7Eanimesh.garg/files/ISRR2015_Krishnan-Garg_TSC.pdf">Transition State Clustering: Unsupervised Surgical Trajectory Segmentation For Robot Learning</a>. Sanjay Krishnan<em>, Animesh Garg</em>, Sachin Patil, Colin Lea, Greg Hager, Pieter Abbeel, Ken Goldberg (* denotes equal contribution).
+International Symposium on Robotics Research (ISRR), 2015.</li>
+</ul>
 
 <h3>
-<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-<p>Please Contact Michael Laskey, <a href="mailto:laskeymd@berkeley.edu">laskeymd@berkeley.edu</a> for code requests or further info</p> 
-      </section>
+<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 
+<p><a href="http://sanjay.krishnan.tech">Sanjay Krishnan</a>, <a href="http://animesh.garg.tech">Animesh Garg</a>, <a href="http://rll.berkeley.edu/%7Esachin/">Sachin Patil</a>, <a href="http://colinlea.com">Colin Lea</a>, <a href="http://www.cs.jhu.edu/%7Ehager/">Gregory Hager</a>, <a href="http://www.cs.berkeley.edu/%7Epabbeel/">Pieter Abbeel</a>, <a href="http://goldberg.berkeley.edu">Ken Goldberg</a></p>
+
+<h3>
+<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
+
+<p>Please contact <a href="http://sanjay.krishnan.tech">Sanjay Krishnan</a> and <a href="http://animesh.garg.tech">Animesh Garg</a> for more information.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/BerkeleyAutomation/tsc/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/BerkeleyAutomation/tsc/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/BerkeleyAutomation/tsc"></a> is maintained by <a href="https://github.com/BerkeleyAutomation">BerkeleyAutomation</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
+
+  
   </body>
 </html>
