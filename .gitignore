@@ -1,0 +1,11 @@
+env/
+*.pyc
+*.png
+*.svg
+*.jpg
+*.pdf
+images/
+results/
+*.csv
+*.npy
+gym/
