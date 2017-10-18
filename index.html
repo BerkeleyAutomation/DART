@@ -1,91 +1,88 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
+    <title>Comparing Human-Centric and Robot-Centric Sample Efficiency for Robot Deep Learning from Demonstrations by BerkeleyAutomation</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
     <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <title>TSC by BerkeleyAutomation</title>
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>TSC</h1>
-        <h2>Transition State Clustering</h2>
-        <a href="https://github.com/BerkeleyAutomation/tsc" class="button"><small>View project on</small> GitHub</a>
-      </div>
-    </header>
+      <div id="header">
+        <!--<nav>
+          <li class="fork"><a href="https://github.com/BerkeleyAutomation/lfd_icra2017">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/BerkeleyAutomation/lfd_icra2017/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/BerkeleyAutomation/lfd_icra2017/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>-->
+      </div><!-- end header -->
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <p><img src="http://www.cs.berkeley.edu/%7Eanimesh.garg/research/images/circleProcess-2.jpg" alt="ISRR Teaser Image"></p>
+    <div class="wrapper">
 
-<h3>
+      <section>
+        <div id="title">
+          <h1>Comparing Human-Centric and Robot-Centric Sample Efficiency for Robot Deep Learning from Demonstrations</h1>
+          <p></p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/BerkeleyAutomation">BerkeleyAutomation</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h3>
 <a id="abstract" class="anchor" href="#abstract" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Abstract</h3>
 
-<p>We present a new unsupervised segmentation algorithm, Transition State Clustering (TSC), which combines results from hybrid dynamical systems and Bayesian non-parametric statistics to segment kinematic recordings of robotic surgical procedures.</p>
-
-<p>TSC treats each demonstration trajectory as a noisy observation of an underlying switched linear dynamical system (SLDS) and clusters spatially and temporally similar transition events (i.e., switches in the linear regime).
-TSC uses a hierarchical Dirichlet Process Gaussian Mixture Model to avoid selecting the number of segments <em>a priori</em>.
-We compare TSC to five alternatives on the respective algorithms' correspondence to a known ground truth in a synthetic example: Gaussian Mixture Model, Gaussian Hidden Markov Model, Coresets, Gaussian Hidden Semi-Markov Model, and an Autoregressive Hidden Markov Model.</p>
-
-<p>We find that when demonstrations are corrupted with process and observation noise, TSC recovers the ground truth 49% more accurately than alternatives.
-Furthermore, TSC runs 100x faster than the Autoregressive Models which require expensive MCMC-based inference. 
-We also evaluated TSC on 67 recordings of surgical needle passing and suturing.
-We supplemented the kinematic recordings with manually annotated visual features denoting grasp and penetration conditions.
-On this dataset, TSC finds 83% of needle passing transitions and 73% of the suturing transitions annotated by human experts.</p>
+<p>
+Motivated by recent advances in Deep Learning for robot control, this paper considers two learning algorithms in terms of how they acquire demonstrations.
+ ``Human-Centric" (HC) sampling is the standard supervised learning algorithm, where a human supervisor demonstrates the task by teleoperating the robot
+ to provide trajectories consisting of state-control pairs. 
+ ``Robot-Centric" (RC) sampling is an increasingly popular alternative used in algorithms such as DAgger, where a human supervisor observes the robot executing a learned 
+policy and provides corrective control labels for each state visited.  RC sampling can be challenging for human supervisors and prone to mislabeling. 
+ RC sampling can also induce error in policy performance because it repeatedly visits areas of the state space that are harder to learn. 
+Although policies learned with RC sampling can be superior to HC sampling for standard learning models such as linear SVMs, policies learned with HC sampling may be comparable with classes of highly-expressive learning models such as deep learning and
+ hyper-parametric decision trees, which can achieve very low training error.  We compare HC and RC using a  grid world and a physical robot singulation task where the input is a binary image of a connected set of objects on a planar worksurface and the policy generates 
+a motion of the gripper to separate one object from the rest.  We observe in simulation that for linear SVMs, policies learned with RC outperformed those learned with HC but that with deep models this advantage disappears.  
+We also find that with RC, the corrective control labels provided by humans can be highly inconsistent. 
+ We finally prove that there exists a class of examples where in the limit, HC is guaranteed to converge to an optimal policy while RC may fail to converge. 
+These results suggest that HC sampling may be preferable for highly-expressive learning models like deep learning for robotic tasks. 
+</p>
 
 <h3>
-<a id="references" class="anchor" href="#references" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>References</h3>
+    <a id="files" class="anchor" href="#files" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Paper</h3>
+    <ul>
+        <li><a href='https://arxiv.org/abs/1610.00850'>Arxiv</a></li>        
+        <li><a href='https://github.com/BerkeleyAutomation/lfd_icra2017/raw/gh-pages/files/icra2017.pdf'>Extended version</a></li>
+    </ul>
 
-<ul>
-<li>
-<a href="http://goldberg.berkeley.edu/pubs/krishnan-ijrr-submission-final.pdf">Transition State Clustering: Unsupervised Surgical Trajectory Segmentation For Robot Learning</a>. Sanjay Krishnan<em>, Animesh Garg</em>, Sachin Patil, Colin Lea, Greg Hager, Pieter Abbeel, Ken Goldberg (* denotes equal contribution).
-Submitted to The International Journal of Robotics Research. May 2016.</li>
+<h3>
+    <a id="video" class="anchor" href="#video" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Video of Singulation Task</h3>
+<div align="center">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/mMo4VSoM9S0" frameborder="0" allowfullscreen></iframe>
+</div>
 
-<li>
-<a href="http://www.cs.berkeley.edu/%7Eanimesh.garg/files/ISRR2015_Krishnan-Garg_TSC.pdf">Transition State Clustering: Unsupervised Surgical Trajectory Segmentation For Robot Learning</a>. Sanjay Krishnan<em>, Animesh Garg</em>, Sachin Patil, Colin Lea, Greg Hager, Pieter Abbeel, Ken Goldberg (* denotes equal contribution).
-International Symposium on Robotics Research (ISRR), 2015.</li>
-</ul>
 
 <h3>
 <a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 
-<p><a href="http://sanjay.krishnan.tech">Sanjay Krishnan</a>, <a href="http://animesh.garg.tech">Animesh Garg</a>, <a href="http://rll.berkeley.edu/%7Esachin/">Sachin Patil</a>, <a href="http://colinlea.com">Colin Lea</a>, <a href="http://www.cs.jhu.edu/%7Ehager/">Gregory Hager</a>, <a href="http://www.cs.berkeley.edu/%7Epabbeel/">Pieter Abbeel</a>, <a href="http://goldberg.berkeley.edu">Ken Goldberg</a></p>
+<p>Michael Laskey, Caleb Chuck, Jonathan Lee, Jeffrey Mahler, Sanjay Krishnan, Kevin Jamieson, Anca Dragan, Ken Goldberg</p>
 
 <h3>
 <a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
 
-<p>Please contact <a href="http://sanjay.krishnan.tech">Sanjay Krishnan</a> and <a href="http://animesh.garg.tech">Animesh Garg</a> for more information.</p>
-        </section>
+<p>Please contact Michael Laskey (laskeymd AT berkeley DOT edu) for further information.</p>
+      </section>
 
-        <aside id="sidebar">
-          <a href="https://github.com/BerkeleyAutomation/tsc/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/BerkeleyAutomation/tsc/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
-
-          <p class="repo-owner"><a href="https://github.com/BerkeleyAutomation/tsc"></a> is maintained by <a href="https://github.com/BerkeleyAutomation">BerkeleyAutomation</a>.</p>
-
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
     </div>
-
-  
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
   </body>
 </html>
