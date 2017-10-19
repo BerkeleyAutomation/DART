@@ -11,6 +11,9 @@ import os
 import pandas as pd
 import scipy.stats
 
+
+TRIALS = 2
+
 class Test(object):
 
     def __init__(self, params):

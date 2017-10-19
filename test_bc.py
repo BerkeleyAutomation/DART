@@ -23,7 +23,7 @@ def main():
     args['lr'] = .01
     args['epochs'] = 50
 
-    TRIALS = 10
+    TRIALS = framework.TRIALS
 
     test = Test(args)
     start_time = timer.time()

@@ -9,3 +9,4 @@ results/
 *.csv
 *.npy
 gym/
+*.swp

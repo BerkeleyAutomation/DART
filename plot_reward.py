@@ -7,7 +7,7 @@ from tools import statistics, utils
 import matplotlib.pyplot as plt
 import itertools
 marker = itertools.cycle((',', '+', '.', 'o', '*', 's')) 
-color=itertools.cycle(('red', 'blue', 'orange', 'purple'))
+color = itertools.cycle(( "#FCB716", "#2D3956", "#A0B2D8", "#988ED5", "#F68B20",))
 
 
 
@@ -51,7 +51,7 @@ def main():
     ptype = 'sup_reward'
     params_dart = params.copy()
     means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='Noisy Supervisor', color='green', linestyle='--')
+    plt.plot(iters, means, label='DART Noisy Supervisor', color='green', linestyle='--')
 
     # BC
     title = 'test_bc'
@@ -76,6 +76,28 @@ def main():
     plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
 
 
+    # DAgger B
+    title = 'test_dagger_b'
+    ptype = 'reward'
+    params_dagger_b = params.copy()
+    params_dagger_b['beta'] = .5      # You may adjust the prior to whatever you chose.
+    c = next(color)
+    means, sems = utils.extract_data(params_dagger_b, iters, title, sub_dir, ptype)
+    plt.plot(iters, means, color=c, label='DAgger-B')
+    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+
+    # Isotropic noise
+    title = 'test_iso'
+    ptype = 'sup_loss'
+    params_iso = params.copy()
+    params_iso['prior'] = 1.0
+    del params_iso['update']
+    c = next(color)
+    means, sems = utils.extract_data(params_iso, iters, title, sub_dir, ptype)
+    plt.plot(iters, means, color=c, label='Isotropic')
+    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+
+
     # DART
     title = 'test_dart'
     ptype = 'reward'
@@ -85,21 +107,7 @@ def main():
     plt.plot(iters, means, label='DART', color=c)
     plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
 
-    # Random
-    title = 'test_rand'
-    ptype = 'reward'
-    params_rand = params.copy()
-    del params_rand['update']
-    params_rand['prior'] = 1.0
-    c = next(color)
-    means, sems = utils.extract_data(params_rand, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='Rand', color=c)
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
- 
-
-
-
-    plt.title(params['envname'])
+    plt.title("Reward on " + str(params['envname']))
     plt.legend()
     plt.xticks(iters)
     plt.legend()
@@ -110,7 +118,6 @@ def main():
 
     if should_save == True:
         plt.savefig(save_path + str(params['envname']) + "_reward.pdf")
-        plt.savefig(save_path + str(params['envname']) + "_reward.svg")
     else:
         plt.show()
 

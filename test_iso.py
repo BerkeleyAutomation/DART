@@ -10,7 +10,7 @@ import time as timer
 import framework
 
 def main():
-    title = 'test_rand'
+    title = 'test_iso'
     ap = argparse.ArgumentParser()
     ap.add_argument('--envname', required=True)                         # OpenAI gym environment
     ap.add_argument('--t', required=True, type=int)                     # time horizon
@@ -23,6 +23,7 @@ def main():
     args['epochs'] = 50
 
     TRIALS = framework.TRIALS
+
 
     test = Test(args)
     start_time = timer.time()
@@ -49,9 +50,7 @@ class Test(framework.Test):
         trajs = []
 
         d = self.params['d']
-        new_cov = np.random.normal(0, 1, (d, d))
-        new_cov = new_cov.T.dot(new_cov)
-        new_cov = new_cov / np.trace(new_cov) * self.params['prior']
+        new_cov = np.identity(d) * self.params['prior']
         self.sup = GaussianSupervisor(self.net_sup, new_cov)
 
         snapshots = []

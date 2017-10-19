@@ -7,7 +7,7 @@ from tools import statistics, utils
 import matplotlib.pyplot as plt
 import itertools
 marker = itertools.cycle((',', '+', '.', 'o', '*', 's')) 
-color = itertools.cycle(( "#FCB716", "#2D3956", "#A0B2D8", "#988ED5", "#F68B20",))
+color = itertools.cycle(( "#FCB716", "#49679E", "#F68B20",))
 
 
 
@@ -52,52 +52,24 @@ def main():
     plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
 
 
-    # DAgger
-    title = 'test_dagger'
+    # Rand
+    title = 'test_rand'
     ptype = 'sup_loss'
-    params_dagger = params.copy()
-    params_dagger['beta'] = .5      # You may adjust the prior to whatever you chose.
-    del params_dagger['update']
+    params_rand = params.copy()
+    params_rand['prior'] = 1.0      # You may adjust the prior to whatever you chose.
+    del params_rand['update']
     c = next(color)
-    means, sems = utils.extract_data(params_dagger, iters, title, sub_dir, ptype)
+    means, sems = utils.extract_data(params_rand, iters, title, sub_dir, ptype)
     plt.plot(iters, means, color=c, linestyle='--')
 
     ptype = 'surr_loss'
-    means, sems = utils.extract_data(params_dagger, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='DAgger', color=c)
+    means, sems = utils.extract_data(params_rand, iters, title, sub_dir, ptype)
+    plt.plot(iters, means, label='Rand Loss', color=c)
     plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
 
-
-    # DAgger B
-    title = 'test_dagger_b'
-    ptype = 'sup_loss'
-    params_dagger_b = params.copy()
-    params_dagger_b['beta'] = .5      # You may adjust the prior to whatever you chose.
-    c = next(color)
-    means, sems = utils.extract_data(params_dagger_b, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, color=c, linestyle='--')
-
-    ptype = 'surr_loss'
-    means, sems = utils.extract_data(params_dagger_b, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='DAgger-B', color=c)
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
-
-
-    # Isotropic noise
-    title = 'test_iso'
-    ptype = 'sup_loss'
-    params_iso = params.copy()
-    params_iso['prior'] = 1.0
-    del params_iso['update']
-    c = next(color)
-    means, sems = utils.extract_data(params_iso, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, color=c, linestyle='--')
-
-    ptype = 'surr_loss'
-    means, sems = utils.extract_data(params_iso, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='Isotropic Noise', color=c)
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
-
+    ptype = 'sim_err'
+    means, sems = utils.extract_data(params_rand, iters, title, sub_dir, ptype)
+    plt.plot(iters, means, label='Rand Sim. Err.', color=c, linestyle=':')
 
 
     # DART
@@ -113,6 +85,11 @@ def main():
     plt.plot(iters, means, label='DART', color=c)
     plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
 
+    ptype = 'sim_err'
+    means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
+    plt.plot(iters, means, label='DART Sim. Err.', color=c, linestyle=':')
+
+
 
     plt.title("Loss on " + str(params['envname']))
     plt.legend()
@@ -124,7 +101,7 @@ def main():
         os.makedirs(save_path)
 
     if should_save == True:
-        plt.savefig(save_path + str(params['envname']) + "_loss.pdf")
+        plt.savefig(save_path + str(params['envname']) + "_loss_rand.pdf")
     else:
         plt.show()
 

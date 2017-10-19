@@ -10,7 +10,7 @@ by mitigating covariate shift.
 ## Requirements
 Clone this repo:
 	
-	git clone git@github.com:jon--lee/noise-injection.git
+	git clone https://github.com/BerkeleyAutomation/DART.git 
 	cd noise-injection
 
 Create a virtual environment (optional):
@@ -30,7 +30,7 @@ Note that other versions may work as well, but they have not been tested.
 
 Clone and install gym and mujoco-py:
 
-	git clone git@github.com:openai/gym.git
+	git clone https://github.com/openai/gym.git
 	cd gym
 	pip install -e .
 	pip install mujoco-py==0.5.7

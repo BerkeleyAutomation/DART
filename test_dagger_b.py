@@ -3,26 +3,29 @@ os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 import gym
 import numpy as np
-from tools import statistics, utils
+from tools import statistics, noise, utils
 from tools.supervisor import GaussianSupervisor
 import argparse
+import scipy.stats
 import time as timer
 import framework
 
 def main():
-    title = 'test_rand'
+    title = 'test_dagger_b'
     ap = argparse.ArgumentParser()
     ap.add_argument('--envname', required=True)                         # OpenAI gym environment
     ap.add_argument('--t', required=True, type=int)                     # time horizon
     ap.add_argument('--iters', required=True, type=int, nargs='+')      # iterations to evaluate the learner on
-    ap.add_argument('--prior', required=True, type=float)               # prior on the amount of error one expects in the learner
-    
+    ap.add_argument('--beta', required=True, type=float)                # beta term, see Ross et al.
+    ap.add_argument('--update', required=True, nargs='+', type=int)     # iterations to update the policy
+
     args = vars(ap.parse_args())
     args['arch'] = [64, 64]
     args['lr'] = .01
     args['epochs'] = 50
 
     TRIALS = framework.TRIALS
+
 
     test = Test(args)
     start_time = timer.time()
@@ -48,22 +51,30 @@ class Test(framework.Test):
         }
         trajs = []
 
-        d = self.params['d']
-        new_cov = np.random.normal(0, 1, (d, d))
-        new_cov = new_cov.T.dot(new_cov)
-        new_cov = new_cov / np.trace(new_cov) * self.params['prior']
-        self.sup = GaussianSupervisor(self.net_sup, new_cov)
+        beta = self.params['beta']
 
         snapshots = []
         for i in range(self.params['iters'][-1]):
             print "\tIteration: " + str(i)
 
+            if i in self.params['update']:
+                self.lnr.train(verbose=True)
 
-            states, i_actions, _, _ = statistics.collect_traj(self.env, self.sup, T, False)
-            trajs.append((states, i_actions))
-            states, i_actions = utils.filter_data(self.params, states, i_actions)
-            
-            self.lnr.add_data(states, i_actions)
+
+            if i == 0:
+                states, i_actions, _, _ = statistics.collect_traj(self.env, self.sup, T, False)
+                trajs.append((states, i_actions))
+                states, i_actions = utils.filter_data(self.params, states, i_actions)
+                self.lnr.add_data(states, i_actions)
+                self.lnr.train()
+
+            else:
+                states, _, _, _ = statistics.collect_traj_beta(self.env, self.sup, self.lnr, T, beta, False)
+                i_actions = [self.sup.intended_action(s) for s in states]
+                states, i_actions = utils.filter_data(self.params, states, i_actions)
+                self.lnr.add_data(states, i_actions)
+                beta = beta * beta
+
 
             if ((i + 1) in self.params['iters']):
                 snapshots.append((self.lnr.X[:], self.lnr.y[:]))
