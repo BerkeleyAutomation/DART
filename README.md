@@ -72,6 +72,14 @@ Arguments common to all tests are given below:
 
 * `--beta [float]` Decaying probability of taking the supervisor's action during training (see Ross et al.).
 
+#### DAgger-B Arguments
+
+* `--update [space-separated integers]` Iterations to update the policy
+* `--beta [float]` Decaying probability of taking the supervisor's action during training.
+
+#### Isotropic Noise Arguments
+
+* `--scale [float]` Amount to scale identity matrix
 
 ## Plotting Results
 

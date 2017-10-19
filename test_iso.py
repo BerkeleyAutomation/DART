@@ -15,7 +15,7 @@ def main():
     ap.add_argument('--envname', required=True)                         # OpenAI gym environment
     ap.add_argument('--t', required=True, type=int)                     # time horizon
     ap.add_argument('--iters', required=True, type=int, nargs='+')      # iterations to evaluate the learner on
-    ap.add_argument('--prior', required=True, type=float)               # prior on the amount of error one expects in the learner
+    ap.add_argument('--scale', required=True, type=float)               # amount to scale the identity matrix
     
     args = vars(ap.parse_args())
     args['arch'] = [64, 64]
@@ -50,7 +50,7 @@ class Test(framework.Test):
         trajs = []
 
         d = self.params['d']
-        new_cov = np.identity(d) * self.params['prior']
+        new_cov = np.identity(d) * self.params['scale']
         self.sup = GaussianSupervisor(self.net_sup, new_cov)
 
         snapshots = []

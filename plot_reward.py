@@ -90,7 +90,7 @@ def main():
     title = 'test_iso'
     ptype = 'sup_loss'
     params_iso = params.copy()
-    params_iso['prior'] = 1.0
+    params_iso['scale'] = 1.0
     del params_iso['update']
     c = next(color)
     means, sems = utils.extract_data(params_iso, iters, title, sub_dir, ptype)
