@@ -96,4 +96,4 @@ The supplementary experiments regarding random covariance matrices can be run by
 which will generate plots comparing Behavior Cloning and DART with a covariance matrix
 with known, fixed trace. The trace can be manually adjusted.
 
-
+For `plot_reward.py`, an optional `--normalize` flag may be added to normalize the reward between 0 and 1 as in the paper.
