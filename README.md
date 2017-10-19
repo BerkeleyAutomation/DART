@@ -1,4 +1,4 @@
-# Noise Injection for Imitation Learning
+# DART: Noise Injection for Imitation Learning
 
 The code is based on work by Michael Laskey, Jonathan Lee, Roy Fox, Anca Dragan, and Ken Goldberg.
 
