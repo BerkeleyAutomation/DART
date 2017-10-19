@@ -86,3 +86,14 @@ Arguments common to all tests are given below:
 Once the tests have finished, rewards and losses can be plotted using `plot_reward.py` and `plot_loss.py`. You may comment/uncomment sections depending on which learning algorithms you want plot. Similarly, running these scripts requires arguments in order to plot the appropriate set of tests. See `plot.sh` as an example of plotting results from tests run in `test.sh`. 
 
 	sh plot.sh
+
+The resulting plots can be found in `images/`
+
+The supplementary experiments regarding random covariance matrices can be run by executing
+
+	sh plot_rand.sh
+
+which will generate plots comparing Behavior Cloning and DART with a covariance matrix
+with known, fixed trace. The trace can be manually adjusted.
+
+
