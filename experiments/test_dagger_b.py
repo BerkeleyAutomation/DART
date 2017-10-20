@@ -1,3 +1,8 @@
+"""
+    Experiment script intended to test DAgger-B, which is DAgger but the policy
+    is updated on select iterations as opposed to every iteration.
+"""
+
 import os
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
 os.environ["CUDA_VISIBLE_DEVICES"]="0"

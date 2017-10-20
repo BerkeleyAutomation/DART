@@ -7,7 +7,7 @@ from tools import statistics, utils
 import matplotlib.pyplot as plt
 import itertools
 marker = itertools.cycle((',', '+', '.', 'o', '*', 's')) 
-color = itertools.cycle(( "#FCB716", "#49679E", "#F68B20",))
+color = itertools.cycle(( "#A0B2D8", "#49679E", "#2D3956" , "#F68B20"))
 
 
 
@@ -35,41 +35,32 @@ def main():
 
     iters = params['iters']
     ptype = 'surr_loss'
-    
 
-    # Behavior Cloning loss on sup distr
-    title = 'test_bc'
-    ptype = 'sup_loss'
-    params_bc = params.copy()
-    del params_bc['update']     # Updates are used in behavior cloning
-    c = next(color)
-    means, sems = utils.extract_data(params_bc, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, color=c, linestyle='--')
-
-    ptype = 'surr_loss'
-    means, sems = utils.extract_data(params_bc, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='Behavior Cloning', color=c)
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    if params['envname'] == 'Humanoid-v1':
+        traces = [0.005, 0.5, 10.0]
+    else:
+        traces = [0.005, 0.5, 5.0]
 
 
     # Rand
-    title = 'test_rand'
-    ptype = 'sup_loss'
-    params_rand = params.copy()
-    params_rand['prior'] = 1.0      # You may adjust the prior to whatever you chose.
-    del params_rand['update']
-    c = next(color)
-    means, sems = utils.extract_data(params_rand, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, color=c, linestyle='--')
+    for trace in traces:
+        title = 'test_rand'
+        ptype = 'sup_loss'
+        params_rand = params.copy()
+        params_rand['trace'] = trace      # You may adjust the trace to whatever you chose.
+        del params_rand['update']
+        c = next(color)
+        means, sems = utils.extract_data(params_rand, iters, title, sub_dir, ptype)
+        plt.plot(iters, means, color=c, linestyle='--')
 
-    ptype = 'surr_loss'
-    means, sems = utils.extract_data(params_rand, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='Rand Loss', color=c)
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+        ptype = 'surr_loss'
+        means, sems = utils.extract_data(params_rand, iters, title, sub_dir, ptype)
+        plt.plot(iters, means, label='Rand Loss, p = ' + str(trace), color=c)
+        plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
 
-    ptype = 'sim_err'
-    means, sems = utils.extract_data(params_rand, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='Rand Sim. Err.', color=c, linestyle=':')
+        # ptype = 'sim_err'
+        # means, sems = utils.extract_data(params_rand, iters, title, sub_dir, ptype)
+        # plt.plot(iters, means, color=c, linestyle=':')
 
 
     # DART
@@ -85,9 +76,9 @@ def main():
     plt.plot(iters, means, label='DART', color=c)
     plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
 
-    ptype = 'sim_err'
-    means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='DART Sim. Err.', color=c, linestyle=':')
+    # ptype = 'sim_err'
+    # means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
+    # plt.plot(iters, means, color=c, linestyle=':')
 
 
 

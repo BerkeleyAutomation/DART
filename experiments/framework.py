@@ -12,7 +12,7 @@ import pandas as pd
 import scipy.stats
 
 
-TRIALS = 10
+TRIALS = 2
 
 class Test(object):
 

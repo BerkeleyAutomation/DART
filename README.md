@@ -28,7 +28,7 @@ While in the VE, install the required packages:
 Replace tfBinaryURL with the appropriate url for your system for Tensorflow version 1.1.0 (e.g. https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.1.0-py2-none-any.whl).
 Note that other versions may work as well, but they have not been tested.
 
-Clone and install gym and mujoco-py:
+Clone and install [gym](https://github.com/openai/gym) and [mujoco-py](https://github.com/openai/mujoco-py):
 
 	git clone https://github.com/openai/gym.git
 	cd gym
@@ -39,26 +39,35 @@ Download mjpro131. Follow the instructions from mujoco-py for where to unzip and
 Again, other versions of Mujoco may work, but they have not been tested on this project.
 
 
-## Running Tests
+## Reproducing the Experiments
 
-The general methods used for initializing the tasks, collecting the data and evaluating the learners can be found in `framework.py`.
-
-Each test file (`test_bc.py`, `test_dart.py`, etc.) runs a different learning algorithm which takes a series of arguments.
-`test_bc.py` runs behavior cloning without any noise as a baseline. `test_dagger` runs the DAgger algorithm (Ross et al.).
-`test_rand.py` runs behavior cloning with a Gaussian-noisy supervisor where the covariance matrix is chosen randomly. `test_dart.py`
-runs the DART iterative noise optimization algorithm.
-
-Tests with arguments used in the DART paper are listed in `test.sh` as an example, which you may run by executing
+The results from the paper with the exact same parameters can be reproduced by running the following shell scripts
 
 	sh test.sh
+	sh plot.sh
 
-Data from each trial will be saved as CSV files under the `results/` directory with sub-directories named after the given arguments.
+The `test.sh` script will run all four domains (Hopper, Walker, HalfCheeth, and Humanoid) for several trials using each algorithm used in the paper and in the supplementary material. Note that this may take hours to complete. Once finished, the data collected can be found in the `results/` directory. Subdirectories will be named after the parameters used.
 
-Arguments common to all tests are given below:
+By running `plot.sh`, reward and loss plots for each environment will be generated as in Fig. 2 and Fig. 4. Loss plots for the random covariance matrices with hand-chosen traces will also be generated as in Fig. 5 of the paper. For the loss plots, loss on the robot's distribution is shown with solid lines and error bars. Loss on the supervisor's distribution is shown with dashed lines.
+
+The simulated error, i.e., the error simulated by a noisy supervisor, may also be plotted in a similar fashion. Although this data is collected from each test, the curves are left out by default so as not to clutter the plots.
+
+For `plot_reward.py`, an optional `--normalize` flag may be added to normalize the reward between 0 and 1 as in the paper.
+
+## Explanations of Experiments and Parameters
+
+The general methods used for initializing the tasks, collecting the data and evaluating the learners can be found in `framework.py`. The number of trials to run each experiment may be specified in `framework.py`.
+
+Each test file (`test_bc.py`, `test_dart.py`, etc.) runs a different learning algorithm which takes a series of arguments.
+`test_bc.py` runs behavior cloning without any noise as a baseline. `test_dagger` runs the DAgger algorithm (Ross et al.). `test_dagger_b.py` runs DAgger-B, which is variant of DAgger where the policy is only updated on select iterations to reduce the computational burden. `test_iso.py` runs behavior cloning with a noisy supervisor with a isotropic covariance matrix. `test_rand.py` runs behavior cloning with a Gaussian-noisy supervisor where the covariance matrix is chosen randomly and scaled to a predetermined trace. `test_dart.py` runs the DART iterative noise optimization algorithm.
+
+Each experiment requires a series of arguments. Arguments common to all tests are given below:
 	
 * `--envname [string]` Name for the OpenAI gym environment e.g. Hopper-v1
 * `--t [integer]` Number of times steps per trajectory
 * `--iters [space-separated integers]` Iterations to evaluate the learned policy
+
+The following are arguments specific to each algorithm:
 
 #### DART Arguments
 
@@ -81,19 +90,5 @@ Arguments common to all tests are given below:
 
 * `--scale [float]` Amount to scale identity matrix
 
-## Plotting Results
+As mentioned before, the data collected from running any of these experiments will be stored in the `results/` directory under subdirectories named after the provided arguments. The data are stored as CSV files which may be extracted and plotted using `pandas` and `matplotlib` or inspected directly using any spreadsheet application. See examples of plotting code in `experiments/plot_reward.py`
 
-Once the tests have finished, rewards and losses can be plotted using `plot_reward.py` and `plot_loss.py`. You may comment/uncomment sections depending on which learning algorithms you want plot. Similarly, running these scripts requires arguments in order to plot the appropriate set of tests. See `plot.sh` as an example of plotting results from tests run in `test.sh`. 
-
-	sh plot.sh
-
-The resulting plots can be found in `images/`
-
-The supplementary experiments regarding random covariance matrices can be run by executing
-
-	sh plot_rand.sh
-
-which will generate plots comparing Behavior Cloning and DART with a covariance matrix
-with known, fixed trace. The trace can be manually adjusted.
-
-For `plot_reward.py`, an optional `--normalize` flag may be added to normalize the reward between 0 and 1 as in the paper.
