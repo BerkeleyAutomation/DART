@@ -59,7 +59,7 @@ For `plot_reward.py`, an optional `--normalize` flag may be added to normalize t
 The general methods used for initializing the tasks, collecting the data and evaluating the learners can be found in `framework.py`. The number of trials to run each experiment may be specified in `framework.py`.
 
 Each test file (`test_bc.py`, `test_dart.py`, etc.) runs a different learning algorithm which takes a series of arguments.
-`test_bc.py` runs behavior cloning without any noise as a baseline. `test_dagger` runs the DAgger algorithm (Ross et al.). `test_dagger_b.py` runs DAgger-B, which is variant of DAgger where the policy is only updated on select iterations to reduce the computational burden. `test_iso.py` runs behavior cloning with a noisy supervisor with a isotropic covariance matrix. `test_rand.py` runs behavior cloning with a Gaussian-noisy supervisor where the covariance matrix is chosen randomly and scaled to a predetermined trace. `test_dart.py` runs the DART iterative noise optimization algorithm.
+`test_bc.py` runs behavior cloning without any noise as a baseline. `test_dagger` runs the DAgger algorithm (Ross et al.). `test_dagger_b.py` runs DAgger-B, which is variant of DAgger where the policy is only updated on select iterations to reduce the computational burden. `test_iso.py` runs behavior cloning with a noisy supervisor with a isotropic covariance matrix. `test_rand.py` runs behavior cloning with a Gaussian-noisy supervisor where the covariance matrix is sampled from an inverse Wishart distribution and scaled to a predetermined trace. `test_dart.py` runs the DART iterative noise optimization algorithm.
 
 Each experiment requires a series of arguments. Arguments common to all tests are given below:
 	
