@@ -47,16 +47,21 @@
 One approach to Imitation Learning is  Behavior Cloning, in which a robot observes a supervisor and infers a control policy. A known problem with this ``off-policy" approach is that the robot's errors compound when drifting away from the supervisor's demonstrations.  On-policy, techniques alleviate this by iteratively collecting corrective actions for the current robot policy. However, these techniques can be tedious for human supervisors, add significant computation burden, and may visit dangerous states during training.  We propose an off-policy approach that \emph{injects noise} into the supervisor's policy while demonstrating. This forces the supervisor to demonstrate how to recover from errors. We propose a new algorithm, DART (Disturbances for Augmenting Robot Trajectories), that collects demonstrations with injected noise, and optimizes the noise level to approximate the error of the robot's trained policy during data collection.  We compare DART with DAgger and Behavior Cloning in two domains: in simulation with an algorithmic supervisor on the MuJoCo  tasks (Walker, Humanoid, Hopper, Half-Cheetah) and in physical experiments with human supervisors training a Toyota HSR robot to perform grasping in clutter.  For high dimensional tasks like Humanoid, DART can be up to 3x faster in computation time and only decreases the supervisor's cumulative reward by 5% during training, whereas DAgger executes policies that have 80% less cumulative reward than the supervisor.  On the grasping in clutter task, DART obtains on average a 62% performance increase over Behavior Cloning.  
 </p>
 
+ <ul>     
+        <li><a href='http://proceedings.mlr.press/v78/laskey17a/laskey17a.pdf'>Paper</a></li>
+  </ul>
+
 
 <h3>
-    <a id="files" class="anchor" href="#files" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Additional Information</h3>
+    <a id="files" class="anchor" href="#files" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Paper</h3>
 
-    <p> This is a long preprint that dicusses how Imitation Learning algorithms can be considered as On-Policy or Off-Policy algorithms. It also examines the injection of epsilon-greedy noise in the discrete action case and bounding the covariate shift with Hellinger divergences. </p>
+    <p> This is a long preprint that dicusses how Imitation Learning algorithms can be considered as On-Policy or Off-Policy algorithms. It also examines how On-Policy method suffer in performance when the batch size increases, whereas DART does not. </p>
     <ul>     
         <li><a href='https://github.com/BerkeleyAutomation/DART/raw/gh-pages/files/old_preprint.pdf'>Preprint</a></li>
     </ul>
 
 <h3>
+
 
 
 <h3>
@@ -68,7 +73,7 @@ One approach to Imitation Learning is  Behavior Cloning, in which a robot observ
 <h3>
 <a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 
-<p> <a href="https://people.eecs.berkeley.edu/~laskeymd/">Michael Laskey</a>, Jonathan Lee, Roy Fox, Anca Dragan, Ken Goldberg</p>
+<p> <a href="https://people.eecs.berkeley.edu/~laskeymd/">Michael Laskey</a>, <a href="http://www.jonathannlee.com/"> Jonathan Lee</a>, Roy Fox, Anca Dragan, Ken Goldberg</p>
 
 <h3>
 <a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
