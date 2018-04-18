@@ -25,7 +25,7 @@ def main():
     args = vars(ap.parse_args())
     args['arch'] = [64, 64]
     args['lr'] = .01
-    args['epochs'] = 50
+    args['epochs'] = 100
 
     TRIALS = framework.TRIALS
 

@@ -26,7 +26,7 @@ def main():
     params = vars(ap.parse_args())
     params['arch'] = [64, 64]
     params['lr'] = .01
-    params['epochs'] = 50
+    params['epochs'] = 100
 
     should_save = params['save']
     del params['save']
