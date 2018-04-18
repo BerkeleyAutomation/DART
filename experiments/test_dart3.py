@@ -1,5 +1,5 @@
 """
-    Experiment script intended to test DAgger
+    Experiment script intended to test DART
 """
 
 import os
@@ -12,20 +12,26 @@ from tools.supervisor import GaussianSupervisor
 import argparse
 import scipy.stats
 import time as timer
+import test_dart
 import framework
+import IPython
 
 def main():
-    title = 'test_dagger'
+    title = 'test_dart3'
     ap = argparse.ArgumentParser()
     ap.add_argument('--envname', required=True)                         # OpenAI gym environment
     ap.add_argument('--t', required=True, type=int)                     # time horizon
     ap.add_argument('--iters', required=True, type=int, nargs='+')      # iterations to evaluate the learner on
-    ap.add_argument('--beta', required=True, type=float)                # beta term, see Ross et al.
-    
+    ap.add_argument('--update', required=True, nargs='+', type=int)     # iterations to update the noise term
+    ap.add_argument('--partition', required=True, type=int)             # Integer between 1 and 50 (exclusive),
+                                                                        # specifying the partition of noise to trained samples
+
     args = vars(ap.parse_args())
     args['arch'] = [64, 64]
     args['lr'] = .01
     args['epochs'] = 50
+
+    title = title + '_part' + str(args['partition'])
 
     TRIALS = framework.TRIALS
 
@@ -39,13 +45,12 @@ def main():
 
 
 
-
-
-class Test(framework.Test):
+class Test(test_dart.Test):
 
 
     def run_iters(self):
         T = self.params['t']
+        partition = self.params['partition']
 
         results = {
             'rewards': [],
@@ -56,28 +61,25 @@ class Test(framework.Test):
             'data_used': [],
         }
         trajs = []
-
-        beta = self.params['beta']
-
         snapshots = []
+
         for i in range(self.params['iters'][-1]):
             print "\tIteration: " + str(i)
 
-            if i == 0:
-                states, i_actions, _, _ = statistics.collect_traj(self.env, self.sup, T, False)
-                trajs.append((states, i_actions))
-                states, i_actions, _ = utils.filter_data(self.params, states, i_actions)
-                self.lnr.add_data(states, i_actions)
-                self.lnr.train()
+            self.sup = self.update_noise(i, trajs)
 
-            else:
-                states, _, _, _ = statistics.collect_traj_beta(self.env, self.sup, self.lnr, T, beta, False)
-                i_actions = [self.sup.intended_action(s) for s in states]
-                states, i_actions, _ = utils.filter_data(self.params, states, i_actions)
-                self.lnr.add_data(states, i_actions)
-                self.lnr.train(verbose=True)
-                beta = beta * beta
+            states, i_actions, _, _ = statistics.collect_traj(self.env, self.sup, T, False)
+            states, i_actions, _ = utils.filter_data(self.params, states, i_actions)
 
+            rang = np.arange(0, len(states))
+            np.random.shuffle(rang)
+
+            noise_states, noise_actions = [states[k] for k in rang[:partition]], [i_actions[k] for k in rang[:partition]]
+            states, i_actions = [states[k] for k in rang[partition:]], [i_actions[k] for k in rang[partition:]]
+
+
+            trajs.append((noise_states, noise_actions))
+            self.lnr.add_data(states, i_actions)
 
             if ((i + 1) in self.params['iters']):
                 snapshots.append((self.lnr.X[:], self.lnr.y[:]))

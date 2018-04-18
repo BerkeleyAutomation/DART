@@ -1,5 +1,5 @@
 """
-    Experiment script intended to test DAgger
+    Experiment script intended to test DART
 """
 
 import os
@@ -12,16 +12,19 @@ from tools.supervisor import GaussianSupervisor
 import argparse
 import scipy.stats
 import time as timer
+import test_dart
 import framework
+import IPython
 
 def main():
-    title = 'test_dagger'
+    title = 'test_dart2'
     ap = argparse.ArgumentParser()
     ap.add_argument('--envname', required=True)                         # OpenAI gym environment
     ap.add_argument('--t', required=True, type=int)                     # time horizon
     ap.add_argument('--iters', required=True, type=int, nargs='+')      # iterations to evaluate the learner on
-    ap.add_argument('--beta', required=True, type=float)                # beta term, see Ross et al.
-    
+    ap.add_argument('--update', required=True, nargs='+', type=int)     # iterations to update the noise term
+    ap.add_argument('--partition', required=True, type=int)             # Integer between 1 and 450 (exclusive),
+
     args = vars(ap.parse_args())
     args['arch'] = [64, 64]
     args['lr'] = .01
@@ -38,14 +41,19 @@ def main():
     print "\n\n\nTotal time: " + str(end_time - start_time) + '\n\n'
 
 
+def count_states(trajs):
+    count = 0
+    for states, actions in trajs:
+        count += len(states)
+    return count
 
 
-
-class Test(framework.Test):
+class Test(test_dart.Test):
 
 
     def run_iters(self):
         T = self.params['t']
+        partition = self.params['partition']
 
         results = {
             'rewards': [],
@@ -57,33 +65,30 @@ class Test(framework.Test):
         }
         trajs = []
 
-        beta = self.params['beta']
-
         snapshots = []
+        traj_snapshots = []
         for i in range(self.params['iters'][-1]):
             print "\tIteration: " + str(i)
 
-            if i == 0:
-                states, i_actions, _, _ = statistics.collect_traj(self.env, self.sup, T, False)
-                trajs.append((states, i_actions))
-                states, i_actions, _ = utils.filter_data(self.params, states, i_actions)
-                self.lnr.add_data(states, i_actions)
-                self.lnr.train()
+            self.sup = self.update_noise(i, trajs)
 
-            else:
-                states, _, _, _ = statistics.collect_traj_beta(self.env, self.sup, self.lnr, T, beta, False)
-                i_actions = [self.sup.intended_action(s) for s in states]
-                states, i_actions, _ = utils.filter_data(self.params, states, i_actions)
-                self.lnr.add_data(states, i_actions)
-                self.lnr.train(verbose=True)
-                beta = beta * beta
+            states, i_actions, _, _ = statistics.collect_traj(self.env, self.sup, T, False)
+            states, i_actions, (held_out_states, held_out_actions) = utils.filter_data(self.params, states, i_actions)
 
+            rang = np.arange(0, len(held_out_states))
+            np.random.shuffle(rang)
+            noise_states, noise_actions = [held_out_states[k] for k in rang[:partition]], [held_out_actions[k] for k in rang[:partition]]
+
+            trajs.append((noise_states, noise_actions))
+            self.lnr.add_data(states, i_actions)
 
             if ((i + 1) in self.params['iters']):
                 snapshots.append((self.lnr.X[:], self.lnr.y[:]))
+                traj_snapshots.append(trajs[:])
 
         for j in range(len(snapshots)):
             X, y = snapshots[j]
+            trajs = traj_snapshots[j]
             self.lnr.X, self.lnr.y = X, y
             self.lnr.train(verbose=True)
             print "\nData from snapshot: " + str(self.params['iters'][j])
@@ -94,8 +99,8 @@ class Test(framework.Test):
             results['surr_losses'].append(it_results['surr_loss_mean'])
             results['sup_losses'].append(it_results['sup_loss_mean'])
             results['sim_errs'].append(it_results['sim_err_mean'])
-            results['data_used'].append(len(y))
-
+            results['data_used'].append(len(y) + count_states(trajs))
+            print "\nTrain data: " + str(len(y))
 
         for key in results.keys():
             results[key] = np.array(results[key])

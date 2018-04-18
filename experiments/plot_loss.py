@@ -7,7 +7,7 @@ from tools import statistics, utils
 import matplotlib.pyplot as plt
 import itertools
 marker = itertools.cycle((',', '+', '.', 'o', '*', 's')) 
-color = itertools.cycle(( "#FCB716", "#2D3956", "#A0B2D8", "#988ED5", "#F68B20",))
+color = itertools.cycle(( "#FCB716", "#2D3956", "#A0B2D8", "#988ED5", "#F68B20", "purple"))
 
 
 
@@ -43,13 +43,17 @@ def main():
     params_bc = params.copy()
     del params_bc['update']     # Updates are used in behavior cloning
     c = next(color)
-    means, sems = utils.extract_data(params_bc, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, color=c, linestyle='--')
+    try:
+        means, sems = utils.extract_data(params_bc, iters, title, sub_dir, ptype)
+        plt.plot(iters, means, color=c, linestyle='--')
 
-    ptype = 'surr_loss'
-    means, sems = utils.extract_data(params_bc, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='Behavior Cloning', color=c)
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+        ptype = 'surr_loss'
+        means, sems = utils.extract_data(params_bc, iters, title, sub_dir, ptype)
+        plt.plot(iters, means, label='Behavior Cloning', color=c)
+        plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    except IOError:
+        pass
+
 
 
     # DAgger
@@ -59,28 +63,38 @@ def main():
     params_dagger['beta'] = .5      # You may adjust the prior to whatever you chose.
     del params_dagger['update']
     c = next(color)
-    means, sems = utils.extract_data(params_dagger, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, color=c, linestyle='--')
+    try:
+        means, sems = utils.extract_data(params_dagger, iters, title, sub_dir, ptype)
+        plt.plot(iters, means, color=c, linestyle='--')
 
-    ptype = 'surr_loss'
-    means, sems = utils.extract_data(params_dagger, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='DAgger', color=c)
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+        ptype = 'surr_loss'
+        means, sems = utils.extract_data(params_dagger, iters, title, sub_dir, ptype)
+        plt.plot(iters, means, label='DAgger', color=c)
+        plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    except IOError:
+        pass
 
 
     # DAgger B
-    title = 'test_dagger_b'
-    ptype = 'sup_loss'
-    params_dagger_b = params.copy()
-    params_dagger_b['beta'] = .5      # You may adjust the prior to whatever you chose.
-    c = next(color)
-    means, sems = utils.extract_data(params_dagger_b, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, color=c, linestyle='--')
+    betas = [.1, .3, .5, .7, .9]
+    colors = ['blue', 'red', 'black', 'pink', 'aqua']
+    for beta, c in zip(betas, colors):
 
-    ptype = 'surr_loss'
-    means, sems = utils.extract_data(params_dagger_b, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='DAgger-B', color=c)
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+        title = 'test_dagger_b_beta' + str(beta)
+        ptype = 'sup_loss'
+        params_dagger_b = params.copy()
+        params_dagger_b['beta'] = beta      # You may adjust the prior to whatever you chose.
+        # c = next(color)
+        try:
+            means, sems = utils.extract_data(params_dagger_b, iters, title, sub_dir, ptype)
+            plt.plot(iters, means, color=c, linestyle='--')
+
+            ptype = 'surr_loss'
+            means, sems = utils.extract_data(params_dagger_b, iters, title, sub_dir, ptype)
+            plt.plot(iters, means, label='DAgger-B', color=c)
+            plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+        except IOError:
+            pass
 
 
     # Isotropic noise
@@ -90,13 +104,16 @@ def main():
     params_iso['scale'] = 1.0
     del params_iso['update']
     c = next(color)
-    means, sems = utils.extract_data(params_iso, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, color=c, linestyle='--')
+    try:
+        means, sems = utils.extract_data(params_iso, iters, title, sub_dir, ptype)
+        plt.plot(iters, means, color=c, linestyle='--')
 
-    ptype = 'surr_loss'
-    means, sems = utils.extract_data(params_iso, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='Isotropic Noise', color=c)
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+        ptype = 'surr_loss'
+        means, sems = utils.extract_data(params_iso, iters, title, sub_dir, ptype)
+        plt.plot(iters, means, label='Isotropic Noise', color=c)
+        plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    except IOError:
+        pass
 
 
 
@@ -105,13 +122,33 @@ def main():
     ptype = 'sup_loss'
     params_dart = params.copy()
     c = next(color)
-    means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, color=c, linestyle='--')
-    
-    ptype = 'surr_loss'
-    means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
-    plt.plot(iters, means, label='DART', color=c)
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    try:
+        means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
+        plt.plot(iters, means, color=c, linestyle='--')
+        
+        ptype = 'surr_loss'
+        means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
+        plt.plot(iters, means, label='DART', color=c)
+        plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    except IOError:
+        pass
+
+
+    # DART
+    title = 'test_dart2'
+    ptype = 'sup_loss'
+    params_dart = params.copy()
+    c = next(color)
+    try:
+        means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
+        plt.plot(iters, means, color=c, linestyle='--')
+        
+        ptype = 'surr_loss'
+        means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
+        plt.plot(iters, means, label='DART2', color=c)
+        plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    except IOError:
+        pass
 
 
     plt.title("Loss on " + str(params['envname']))

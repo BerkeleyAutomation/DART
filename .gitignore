@@ -2,6 +2,7 @@ env/
 *.pyc
 *.png
 *.svg
+*.txt
 *.jpg
 *.pdf
 images/
@@ -10,3 +11,4 @@ results/
 *.npy
 gym/
 *.swp
+

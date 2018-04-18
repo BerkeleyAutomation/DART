@@ -14,6 +14,7 @@ import argparse
 import scipy.stats
 import time as timer
 import framework
+import IPython
 
 def main():
     title = 'test_dagger_b'
@@ -29,19 +30,23 @@ def main():
     args['lr'] = .01
     args['epochs'] = 50
 
-    TRIALS = framework.TRIALS
+    title = title + '_beta' + str(args['beta'])
 
+    TRIALS = framework.TRIALS
 
     test = Test(args)
     start_time = timer.time()
     test.run_trials(title, TRIALS)
     end_time = timer.time()
 
+
+
     print "\n\n\nTotal time: " + str(end_time - start_time) + '\n\n'
 
 
 
 class Test(framework.Test):
+
 
 
     def run_iters(self):
@@ -52,7 +57,8 @@ class Test(framework.Test):
             'sup_rewards': [],
             'surr_losses': [],
             'sup_losses': [],
-            'sim_errs': []
+            'sim_errs': [],
+            'data_used': [],
         }
         trajs = []
 
@@ -69,17 +75,16 @@ class Test(framework.Test):
             if i == 0:
                 states, i_actions, _, _ = statistics.collect_traj(self.env, self.sup, T, False)
                 trajs.append((states, i_actions))
-                states, i_actions = utils.filter_data(self.params, states, i_actions)
+                states, i_actions, _ = utils.filter_data(self.params, states, i_actions)
                 self.lnr.add_data(states, i_actions)
                 self.lnr.train()
 
             else:
                 states, _, _, _ = statistics.collect_traj_beta(self.env, self.sup, self.lnr, T, beta, False)
                 i_actions = [self.sup.intended_action(s) for s in states]
-                states, i_actions = utils.filter_data(self.params, states, i_actions)
+                states, i_actions, _ = utils.filter_data(self.params, states, i_actions)
                 self.lnr.add_data(states, i_actions)
-                beta = beta * beta
-
+                beta = beta * self.params['beta']
 
             if ((i + 1) in self.params['iters']):
                 snapshots.append((self.lnr.X[:], self.lnr.y[:]))
@@ -96,7 +101,7 @@ class Test(framework.Test):
             results['surr_losses'].append(it_results['surr_loss_mean'])
             results['sup_losses'].append(it_results['sup_loss_mean'])
             results['sim_errs'].append(it_results['sim_err_mean'])
-
+            results['data_used'].append(len(y))
 
         for key in results.keys():
             results[key] = np.array(results[key])

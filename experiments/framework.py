@@ -12,7 +12,7 @@ import pandas as pd
 import scipy.stats
 
 
-TRIALS = 10
+TRIALS = 20
 
 class Test(object):
 
@@ -69,6 +69,7 @@ class Test(object):
         end_time = timer.time()
         results['start_time'] = start_time
         results['end_time'] = end_time
+        results['total_time'] = end_time - start_time
 
         return results
 
@@ -162,7 +163,8 @@ class Test(object):
         self.rewards_all, self.sup_rewards_all = np.zeros((TRIALS, m)), np.zeros((TRIALS, m))       # reward obtained from learner and (noisy) supervisor
         self.surr_losses_all, self.sup_losses_all = np.zeros((TRIALS, m)), np.zeros((TRIALS, m))    # loss obtained on supervisor's distribution and on learner's distribution
         self.sim_errs_all = np.zeros((TRIALS, m))                                                   # Empirical simulated error of supervisor (trace of covariance matrix)
-
+        self.data_used_all = np.zeros((TRIALS, m))
+        self.total_times_all = np.zeros((TRIALS))
 
         for t in range(TRIALS):
             print "\n\nTrial: " + str(t)
@@ -172,6 +174,8 @@ class Test(object):
             self.rewards_all[t, :], self.sup_rewards_all[t, :] = results['rewards'], results['sup_rewards']
             self.surr_losses_all[t, :], self.sup_losses_all[t, :] = results['surr_losses'], results['sup_losses']
             self.sim_errs_all[t, :] = results['sim_errs']
+            self.data_used_all[t, :] = results['data_used']
+            self.total_times_all[t] = results['total_time']
 
             print "trial time: " + str(total_time)
             self.save_all(t + 1, paths)
@@ -184,6 +188,9 @@ class Test(object):
         sup_rewards_all = self.sup_rewards_all[:t, :]
         sup_losses_all = self.sup_losses_all[:t, :]
         sim_errs_all = self.sim_errs_all[:t, :]
+        data_used_all = self.data_used_all[:t, :]
+        total_times_all = self.total_times_all[:t]
+
 
         iters = self.params['iters']
 
@@ -194,13 +201,16 @@ class Test(object):
             sup_rewards = sup_rewards_all[:, i]
             sup_losses = sup_losses_all[:, i]
             sim_errs = sim_errs_all[:, i]
+            data_used = data_used_all[:, i]
+            total_time = total_times_all[:]
             save_path = paths[iters[i]]
+
             print "Saving to: " + str(save_path)
 
 
             d = {'reward': rewards, 'surr_loss': surr_losses, 
                 'sup_reward': sup_rewards, 'sup_loss': sup_losses,
-                'sim_err': sim_errs}
+                'sim_err': sim_errs, 'data_used': data_used, 'total_time': total_time}
             df = pd.DataFrame(d)
             df.to_csv(save_path)
 
@@ -209,6 +219,8 @@ class Test(object):
             sup_reward_mean, sup_reward_sem = np.mean(sup_rewards), scipy.stats.sem(sup_rewards)
             sup_loss_mean, sup_loss_sem = np.mean(sup_losses), scipy.stats.sem(sup_losses)
             sim_err_mean, sim_err_sem = np.mean(sim_errs), scipy.stats.sem(sim_errs)
+            data_used_mean, data_used_sem = np.mean(data_used), scipy.stats.sem(data_used)
+            total_time_mean, total_time_sem = np.mean(total_time), scipy.stats.sem(total_time)
 
             print "Iteration " + str(it) + " results:"
             print "For iteration: " + str(it)
@@ -217,6 +229,8 @@ class Test(object):
             print "Sup reward: " + str(sup_reward_mean) + " +/- " + str(sup_reward_sem)
             print "Sup loss: " + str(sup_loss_mean) + " +/- " + str(sup_loss_sem)
             print "Sim err: " + str(sim_err_mean) + " +/- " + str(sim_err_sem)
+            print "Data used: " + str(data_used_mean) + " +/- " + str(data_used_sem)
+            print "Total time: " + str(total_time_mean) + " +/- " + str(total_time_sem)
             print "\n\n\n"
 
 

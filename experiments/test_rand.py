@@ -48,7 +48,8 @@ class Test(framework.Test):
             'sup_rewards': [],
             'surr_losses': [],
             'sup_losses': [],
-            'sim_errs': []
+            'sim_errs': [],
+            'data_used': [],
         }
         trajs = []
 
@@ -65,7 +66,7 @@ class Test(framework.Test):
 
             states, i_actions, _, _ = statistics.collect_traj(self.env, self.sup, T, False)
             trajs.append((states, i_actions))
-            states, i_actions = utils.filter_data(self.params, states, i_actions)
+            states, i_actions, _ = utils.filter_data(self.params, states, i_actions)
             
             self.lnr.add_data(states, i_actions)
 
@@ -84,6 +85,7 @@ class Test(framework.Test):
             results['surr_losses'].append(it_results['surr_loss_mean'])
             results['sup_losses'].append(it_results['sup_loss_mean'])
             results['sim_errs'].append(it_results['sim_err_mean'])
+            results['data_used'].append(len(y))
 
 
         for key in results.keys():
