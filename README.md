@@ -11,29 +11,16 @@ by mitigating covariate shift.
 Clone this repo:
 	
 	git clone https://github.com/BerkeleyAutomation/DART.git 
-	cd noise-injection
+	cd DART
 
-Create a virtual environment (optional):
+Create a virtual environment (optional), but useful for exact reproduction of experiments:
 
 	virtualenv env
 	source env/bin/activate
 
 While in the VE, install the required packages:
 
-	pip install --upgrade pip
-	pip install numpy scipy matplotlib pandas sklearn
-	pip install keras==2.0.4
-	pip install --upgrade tfBinaryURL 
-
-Replace tfBinaryURL with the appropriate url for your system for Tensorflow version 1.1.0 (e.g. https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.1.0-py2-none-any.whl).
-Note that other versions may work as well, but they have not been tested.
-
-Clone and install [gym](https://github.com/openai/gym) and [mujoco-py](https://github.com/openai/mujoco-py):
-
-	git clone https://github.com/openai/gym.git
-	cd gym
 	pip install -e .
-	pip install mujoco-py==0.5.7
 
 Download mjpro131. Follow the instructions from mujoco-py for where to unzip and where to place the license key.
 Again, other versions of Mujoco may work, but they have not been tested on this project.
