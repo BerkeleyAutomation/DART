@@ -27,7 +27,7 @@ def main():
     params = vars(ap.parse_args())
     params['arch'] = [64, 64]
     params['lr'] = .01
-    params['epochs'] = 50
+    params['epochs'] = 100
 
     should_save = params['save']
     should_normalize = params['normalize']
@@ -166,17 +166,20 @@ def main():
     except IOError:
         pass
 
-    title = 'test_dart2'
-    ptype = 'reward'
-    params_dart = params.copy()
-    c = next(color)
-    try: 
-        means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
-        means, sems = normalize(means, sems)
-        plt.plot(iters, means, label='DART2', color=c)
-        plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
-    except IOError:
-        pass
+    parts = [5, 10, 50, 450]
+    for part in parts:
+        title = 'test_dart2'
+        ptype = 'reward'
+        params_dart = params.copy()
+        params_dart['partition'] = part
+        c = next(color)
+        try: 
+            means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
+            means, sems = normalize(means, sems)
+            plt.plot(iters, means, label='DART2_' + str(part), color=c)
+            plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+        except IOError:
+            pass
 
     # partitions = [3, 10]
     # colors = ['purple', 'green']

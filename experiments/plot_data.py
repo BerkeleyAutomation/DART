@@ -27,7 +27,7 @@ def main():
     params = vars(ap.parse_args())
     params['arch'] = [64, 64]
     params['lr'] = .01
-    params['epochs'] = 50
+    params['epochs'] = 100
 
     should_save = params['save']
     should_normalize = params['normalize']
@@ -96,13 +96,32 @@ def main():
         except IOError:
             pass
 
-    IPython.embed()
     dagger_b_data2 = np.array(dagger_b_data2)
     dagger_b_data2 = np.sum(dagger_b_data2[:, -1])
 
 
+
+    parts = [5, 10, 50, 450]
+    dart_names = ['dart2_' + str(part) for part in parts]
+    dart_data = []
+    for part in parts:
+        title = 'test_dart2'
+        ptype = 'data_used'
+        params_dart = params.copy()
+        params_dart['partition'] = part
+        try: 
+            means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
+            dart_data.append(means[-1])
+        except IOError:
+            pass
+
+
+
+
     labels = ['BC', 'Dagger-b', 'Dagger-b2']
     data = [bc_data, dagger_b_data, dagger_b_data2]
+    labels += dart_names
+    data += dart_data
     plt.bar(labels, data)
 
     IPython.embed()

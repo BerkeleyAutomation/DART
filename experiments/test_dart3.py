@@ -29,7 +29,7 @@ def main():
     args = vars(ap.parse_args())
     args['arch'] = [64, 64]
     args['lr'] = .01
-    args['epochs'] = 50
+    args['epochs'] = 100
 
     title = title + '_part' + str(args['partition'])
 
@@ -62,6 +62,8 @@ class Test(test_dart.Test):
         }
         trajs = []
         snapshots = []
+        traj_snapshots = []
+        self.optimized_data = 0
 
         for i in range(self.params['iters'][-1]):
             print "\tIteration: " + str(i)
@@ -83,9 +85,11 @@ class Test(test_dart.Test):
 
             if ((i + 1) in self.params['iters']):
                 snapshots.append((self.lnr.X[:], self.lnr.y[:]))
+                traj_snapshots.append(self.optimized_data)
 
         for j in range(len(snapshots)):
             X, y = snapshots[j]
+            optimized_data = traj_snapshots[j]
             self.lnr.X, self.lnr.y = X, y
             self.lnr.train(verbose=True)
             print "\nData from snapshot: " + str(self.params['iters'][j])
@@ -96,7 +100,9 @@ class Test(test_dart.Test):
             results['surr_losses'].append(it_results['surr_loss_mean'])
             results['sup_losses'].append(it_results['sup_loss_mean'])
             results['sim_errs'].append(it_results['sim_err_mean'])
-            results['data_used'].append(len(y))
+            results['data_used'].append(len(y) + optimized_data)
+            print "\nTrain data: " + str(len(y))
+            print "\n Optimize data: " + str(optimized_data)
 
 
         for key in results.keys():
