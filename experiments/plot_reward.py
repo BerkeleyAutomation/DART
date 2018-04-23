@@ -7,7 +7,7 @@ from tools import statistics, utils
 import matplotlib.pyplot as plt
 import itertools
 marker = itertools.cycle((',', '+', '.', 'o', '*', 's')) 
-color = itertools.cycle(( "#FCB716", "#2D3956", "#A0B2D8", "#988ED5", "#F68B20",))
+color = itertools.cycle(( "#FCB716", "#2D3956", "#A0B2D8", "#988ED5", "#F68B20", 'purple'))
 
 
 
@@ -27,7 +27,7 @@ def main():
     params = vars(ap.parse_args())
     params['arch'] = [64, 64]
     params['lr'] = .01
-    params['epochs'] = 50
+    params['epochs'] = 100
 
     should_save = params['save']
     should_normalize = params['normalize']
@@ -63,9 +63,12 @@ def main():
     title = 'test_dart'
     ptype = 'sup_reward'
     params_dart = params.copy()
-    means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
-    means, sems = normalize(means, sems)
-    plt.plot(iters, means, label='DART Noisy Supervisor', color='green', linestyle='--')
+    try:
+        means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
+        means, sems = normalize(means, sems)
+        plt.plot(iters, means, label='DART Noisy Supervisor', color='green', linestyle='--')
+    except IOError:
+        pass
 
     # BC
     title = 'test_bc'
@@ -73,10 +76,13 @@ def main():
     params_bc = params.copy()
     del params_bc['update']     # Updates are used in behavior cloning
     c = next(color)
-    means, sems = utils.extract_data(params_bc, iters, title, sub_dir, ptype)
-    means, sems = normalize(means, sems)
-    plt.plot(iters, means, label='Behavior Cloning', color=c)
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    try:
+        means, sems = utils.extract_data(params_bc, iters, title, sub_dir, ptype)
+        means, sems = normalize(means, sems)
+        plt.plot(iters, means, label='Behavior Cloning', color=c)
+        plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    except IOError:
+        pass
 
 
     # DAgger
@@ -86,22 +92,49 @@ def main():
     del params_dagger['update']
     params_dagger['beta'] = .5
     c = next(color)
-    means, sems = utils.extract_data(params_dagger, iters, title, sub_dir, ptype)
-    means, sems = normalize(means, sems)
-    plt.plot(iters, means, label='DAgger', color=c)
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    try:
+        means, sems = utils.extract_data(params_dagger, iters, title, sub_dir, ptype)
+        means, sems = normalize(means, sems)
+        plt.plot(iters, means, label='DAgger', color=c)
+        plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    except IOError:
+        pass
 
 
     # DAgger B
-    title = 'test_dagger_b'
-    ptype = 'reward'
-    params_dagger_b = params.copy()
-    params_dagger_b['beta'] = .5      # You may adjust the prior to whatever you chose.
-    c = next(color)
-    means, sems = utils.extract_data(params_dagger_b, iters, title, sub_dir, ptype)
-    means, sems = normalize(means, sems)
-    plt.plot(iters, means, color=c, label='DAgger-B')
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    betas = [.5]
+    colors = ['blue', 'red', 'black', 'pink', 'aqua']
+    for beta, c in zip(betas, colors):
+
+        title = 'test_dagger_b_beta' + str(beta)
+        ptype = 'reward'
+        params_dagger_b = params.copy()
+        params_dagger_b['beta'] = beta      # You may adjust the prior to whatever you chose.
+        # c = next(color)
+        try:
+            means, sems = utils.extract_data(params_dagger_b, iters, title, sub_dir, ptype)
+            means, sems = normalize(means, sems)
+            plt.plot(iters, means, color=c, label=title)
+            plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+        except IOError:
+            pass
+
+    colors = ['blue', 'red', 'black', 'pink', 'aqua'][::-1]
+    for beta, c in zip(betas, colors):
+
+        title = 'test_dagger_b2_beta' + str(beta)
+        ptype = 'reward'
+        params_dagger_b = params.copy()
+        params_dagger_b['beta'] = beta      # You may adjust the prior to whatever you chose.
+        # c = next(color)
+        try:
+            means, sems = utils.extract_data(params_dagger_b, iters, title, sub_dir, ptype)
+            means, sems = normalize(means, sems)
+            plt.plot(iters, means, color=c, label=title)
+            plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+        except IOError:
+            pass
+      
 
 
     # Isotropic noise
@@ -111,11 +144,13 @@ def main():
     params_iso['scale'] = 1.0
     del params_iso['update']
     c = next(color)
-    means, sems = utils.extract_data(params_iso, iters, title, sub_dir, ptype)
-    means, sems = normalize(means, sems)
-    plt.plot(iters, means, color=c, label='Isotropic')
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
-
+    try:
+        means, sems = utils.extract_data(params_iso, iters, title, sub_dir, ptype)
+        means, sems = normalize(means, sems)
+        plt.plot(iters, means, color=c, label='Isotropic')
+        plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    except IOError:
+        pass
 
 
     # DART
@@ -123,10 +158,48 @@ def main():
     ptype = 'reward'
     params_dart = params.copy()
     c = next(color)
-    means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
-    means, sems = normalize(means, sems)
-    plt.plot(iters, means, label='DART', color=c)
-    plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    try: 
+        means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
+        means, sems = normalize(means, sems)
+        plt.plot(iters, means, label='DART', color=c)
+        plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    except IOError:
+        pass
+
+    parts = [5, 10, 50, 450]
+    for part in parts:
+        title = 'test_dart2'
+        ptype = 'reward'
+        params_dart = params.copy()
+        params_dart['partition'] = part
+        c = next(color)
+        try: 
+            means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
+            means, sems = normalize(means, sems)
+            plt.plot(iters, means, label='DART2_' + str(part), color=c)
+            plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+        except IOError:
+            pass
+
+    # partitions = [3, 10]
+    # colors = ['purple', 'green']
+    # for part, c in zip(partitions, colors):
+    #     title = 'test_dart3_part' + str(part)
+    #     ptype = 'reward'
+    #     params_dart = params.copy()
+    #     params_dart['partition'] = part
+    #     # c = next(color)
+    #     try: 
+    #         means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
+    #         means, sems = normalize(means, sems)
+    #         plt.plot(iters, means, label=title, color=c)
+    #         plt.fill_between(iters, (means - sems), (means + sems), alpha=.3, color=c)
+    #     except IOError:
+    #         print "failed to load"
+    #         pass
+
+
+
 
     plt.title("Reward on " + str(params['envname']))
     plt.legend()
@@ -134,6 +207,7 @@ def main():
     plt.legend()
     if should_normalize:
         plt.ylim(0, 1.05)
+        plt.yticks([0.0, 0.25, 0.5, 0.75, 1.0])
 
     save_path = 'images/'
     if not os.path.exists(save_path):

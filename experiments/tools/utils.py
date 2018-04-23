@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import scipy.stats
+import IPython
 
 def stringify(lst):
     s = ""
@@ -97,7 +98,14 @@ def filter_data(params, states, i_actions):
     """
     T = params['t']
     k = np.random.randint(0, T/50)
-    states, i_actions = states[k::T/50], i_actions[k::T/50]
-    return states, i_actions
+    left_out_states, left_out_actions = [], []
+    for j in range(T/50):
+        if not j == k:
+            left_out_states += states[j::T/50]
+            left_out_actions += i_actions[j::T/50]
+
+    new_states, new_i_actions = states[k::T/50], i_actions[k::T/50]
+
+    return new_states, new_i_actions, (left_out_states, left_out_actions)
 
 

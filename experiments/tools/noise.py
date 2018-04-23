@@ -1,5 +1,6 @@
 import numpy as np
 import statistics
+import IPython
 
 def sample_covariance_lnr(env, lnr, sup, samples, T):
 
@@ -35,6 +36,7 @@ def sample_covariance_trajs(env, lnr, trajs, samples, T):
     d = env.action_space.shape[0]
     cov = np.zeros((d, d))
     trajs = np.array(trajs[len(trajs) - samples:])
+    # trajs = np.array(trajs[:])
     # trajs = np.array(trajs[len(trajs) - samples * 2:])
     # indices = np.random.choice(len(trajs), min(len(trajs), samples), replace=False)
     # trajs = trajs[indices]
@@ -45,6 +47,7 @@ def sample_covariance_trajs(env, lnr, trajs, samples, T):
 
         diff = sup_actions - lnr_actions
         cov = cov + np.dot(diff.T, diff) / float(length)
+
 
     print "Trajs: " + str(len(trajs))
     return cov / float(len(trajs))
