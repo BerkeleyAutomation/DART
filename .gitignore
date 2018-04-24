@@ -11,4 +11,4 @@ results/
 *.npy
 gym/
 *.swp
-
+.DS_Store

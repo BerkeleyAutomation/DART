@@ -21,7 +21,8 @@ def main():
     ap.add_argument('--t', required=True, type=int)                     # time horizon
     ap.add_argument('--iters', required=True, type=int, nargs='+')      # iterations to evaluate the learner on
     ap.add_argument('--update', required=True, nargs='+', type=int)     # iterations to update the noise term
-    
+    ap.add_argument('--partition', required=True, type=int)             # Integer between 1 and 450 (exclusive),
+
     args = vars(ap.parse_args())
     args['arch'] = [64, 64]
     args['lr'] = .01
@@ -36,8 +37,6 @@ def main():
     end_time = timer.time()
 
     print "\n\n\nTotal time: " + str(end_time - start_time) + '\n\n'
-
-
 
 
 
@@ -68,9 +67,9 @@ class Test(framework.Test):
 
 
 
-
     def run_iters(self):
         T = self.params['t']
+        partition = self.params['partition']
 
         results = {
             'rewards': [],
@@ -91,9 +90,13 @@ class Test(framework.Test):
             self.sup = self.update_noise(i, trajs)
 
             states, i_actions, _, _ = statistics.collect_traj(self.env, self.sup, T, False)
-            trajs.append((states, i_actions))
-            states, i_actions, _ = utils.filter_data(self.params, states, i_actions)
-            
+            states, i_actions, (held_out_states, held_out_actions) = utils.filter_data(self.params, states, i_actions)
+
+            rang = np.arange(0, len(held_out_states))
+            np.random.shuffle(rang)
+            noise_states, noise_actions = [held_out_states[k] for k in rang[:partition]], [held_out_actions[k] for k in rang[:partition]]
+
+            trajs.append((noise_states, noise_actions))
             self.lnr.add_data(states, i_actions)
 
             if ((i + 1) in self.params['iters']):
@@ -102,7 +105,7 @@ class Test(framework.Test):
 
         for j in range(len(snapshots)):
             X, y = snapshots[j]
-            optimized_data = self.traj_snapshots[j]
+            optimized_data = traj_snapshots[j]
             self.lnr.X, self.lnr.y = X, y
             self.lnr.train(verbose=True)
             print "\nData from snapshot: " + str(self.params['iters'][j])
@@ -116,7 +119,6 @@ class Test(framework.Test):
             results['data_used'].append(len(y) + optimized_data)
             print "\nTrain data: " + str(len(y))
             print "\n Optimize data: " + str(optimized_data)
-
 
         for key in results.keys():
             results[key] = np.array(results[key])
