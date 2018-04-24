@@ -59,6 +59,7 @@ The following are arguments specific to each algorithm:
 #### DART Arguments
 
 * `--update [space-separated integers]` Iterations to update the noise parameter.
+* `--partition [integer] Number of examples to use for noise optimizations
 
 #### Random Noise Arguments
 
