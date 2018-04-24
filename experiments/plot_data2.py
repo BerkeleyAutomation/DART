@@ -40,12 +40,36 @@ def main():
     ptype = 'data_used'
     
 
+    # DAgger B
+    betas = [.1, .3, .5, .7, .9]
+    colors = ['blue', 'red', 'black', 'pink', 'aqua']
+    dagger_b_data = []
+    dagger_b_sems = []
+    for beta, c in zip(betas, colors):
+
+        title = 'test_dagger_b'
+        ptype = 'data_used'
+        params_dagger_b = params.copy()
+        params_dagger_b['beta'] = beta      # You may adjust the prior to whatever you chose.
+        try:
+            means, sems = utils.extract_data(params_dagger_b, iters, title, sub_dir, ptype)
+            dagger_b_data.append(means)
+            dagger_b_sems.append(sems)
+        except IOError:
+            pass
+
+    dagger_b_data = np.array(dagger_b_data)
+    dagger_b_sems = np.array(dagger_b_sems)
+    dagger_b_data = np.sum(dagger_b_data[:, -1])
+    sems = dagger_b_sems[:, -1]
+    dagger_b_sem = np.sqrt(np.sum(sems ** 2.0))
 
 
-    parts = [5, 10, 50, 450][::-1]
+
+    parts = [10]
     dart_names = ['DART ' + str(part) for part in parts]
     dart_data = []
-    dart_errs = []
+    dart_sem = []
     for part in parts:
         title = 'test_dart'
         ptype = 'data_used'
@@ -54,13 +78,20 @@ def main():
         try: 
             means, sems = utils.extract_data(params_dart, iters, title, sub_dir, ptype)
             dart_data.append(means[-1])
-            dart_errs.append(sems[-1])
+            dart_sem.append(sems[-1])
+
         except IOError:
             pass
 
-    labels = dart_names
-    data = dart_data
-    errs = dart_errs
+
+
+
+    labels = ['Dagger-B']
+    data = [dagger_b_data]
+    errs = [dagger_b_sem]
+    labels = labels + dart_names
+    data = data + dart_data
+    errs = errs + dart_sem
     plt.bar(labels, data, yerr=errs)
     plt.title(params['envname'][:-3])
 
@@ -69,8 +100,8 @@ def main():
         os.makedirs(save_path)
 
     if should_save == True:
-        plt.savefig(save_path + str(params['envname']) + "_data.pdf")
-        plt.savefig(save_path + "svg_" + str(params['envname']) + "_data.svg")
+        plt.savefig(save_path + str(params['envname']) + "_data2.pdf")
+        plt.savefig(save_path + "svg_" + str(params['envname']) + "_data2.svg")
     else:
         plt.show()
 

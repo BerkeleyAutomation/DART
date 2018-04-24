@@ -30,8 +30,6 @@ def main():
     args['lr'] = .01
     args['epochs'] = 100
 
-    title = title + '_beta' + str(args['beta'])
-
     TRIALS = framework.TRIALS
 
     test = Test(args)
