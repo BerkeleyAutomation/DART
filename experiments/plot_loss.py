@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import os
 import argparse
@@ -24,7 +26,7 @@ def main():
     ap.add_argument('--save', action='store_true', default=False)
     
     params = vars(ap.parse_args())
-    params['arch'] = [64, 64]
+    params['arch'] = [0]
     params['lr'] = .01
     params['epochs'] = 100
 
@@ -136,16 +138,15 @@ def main():
 
 
     plt.title("Loss on " + str(params['envname']))
-    plt.legend()
     plt.xticks(iters)
-    plt.legend(loc='upper right')
-
+    plt.legend()
     save_path = 'images/'
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
     if should_save == True:
         plt.savefig(save_path + str(params['envname']) + "_loss.pdf")
+        plt.savefig(save_path + str(params['envname']) + "_loss.svg")
     else:
         plt.show()
 

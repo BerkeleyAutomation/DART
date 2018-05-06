@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import os
 import argparse
@@ -26,7 +28,7 @@ def main():
     ap.add_argument('--normalize', action='store_true', default=False)
     
     params = vars(ap.parse_args())
-    params['arch'] = [64, 64]
+    params['arch'] = [0]
     params['lr'] = .01
     params['epochs'] = 100
 
@@ -164,6 +166,7 @@ def main():
 
     if should_save == True:
         plt.savefig(save_path + str(params['envname']) + "_reward.pdf")
+        plt.savefig(save_path + str(params['envname']) + "_reward.svg")
     else:
         plt.legend()
         plt.show()
