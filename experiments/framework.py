@@ -10,7 +10,8 @@ import gym
 import os
 import pandas as pd
 import scipy.stats
-
+from sklearn.linear_model import LinearRegression
+import IPython
 
 TRIALS = 20
 
@@ -24,7 +25,14 @@ class Test(object):
         """
             Initializes new neural network and learner wrapper
         """
-        est = knet.Network(params['arch'], learning_rate=params['lr'], epochs=params['epochs'])
+        assert params['arch'] == [0]
+        if params['arch'] == [0]:
+            print "\n\n linear regression \n\n"
+            est = LinearRegression();
+        else:
+            print "\n\n network \n\n"
+            est = knet.Network(params['arch'], learning_rate=params['lr'], epochs=params['epochs'])
+
         lnr = learner.Learner(est)
         return est, lnr
 

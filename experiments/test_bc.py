@@ -21,9 +21,15 @@ def main():
     ap.add_argument('--envname', required=True)                         # OpenAI gym environment
     ap.add_argument('--t', required=True, type=int)                     # time horizon
     ap.add_argument('--iters', required=True, type=int, nargs='+')      # iterations to evaluate the learner on
-
+    ap.add_argument('--linear', action='store_true')
+    
     args = vars(ap.parse_args())
-    args['arch'] = [64, 64]
+
+    if args['linear']:
+        args['arch'] = [0]
+    else:
+        args['arch'] = [64, 64]
+    del args['linear']
     args['lr'] = .01
     args['epochs'] = 100
 

@@ -24,9 +24,16 @@ def main():
     ap.add_argument('--iters', required=True, type=int, nargs='+')      # iterations to evaluate the learner on
     ap.add_argument('--beta', required=True, type=float)                # beta term, see Ross et al.
     ap.add_argument('--update', required=True, nargs='+', type=int)     # iterations to update the policy
-
+    ap.add_argument('--linear', action='store_true')
+    
     args = vars(ap.parse_args())
-    args['arch'] = [64, 64]
+
+    if args['linear']:
+        args['arch'] = [0]
+    else:
+        args['arch'] = [64, 64]
+    del args['linear']
+
     args['lr'] = .01
     args['epochs'] = 100
 
