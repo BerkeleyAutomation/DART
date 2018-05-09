@@ -30,7 +30,6 @@ class Test(object):
             print "\n\n linear regression \n\n"
             est = LinearRegression();
         else:
-            print "\n\n network \n\n"
             est = knet.Network(params['arch'], learning_rate=params['lr'], epochs=params['epochs'])
 
         lnr = learner.Learner(est)
